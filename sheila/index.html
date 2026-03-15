@@ -94,6 +94,17 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f4f0fa;color:#2a1f38;m
 .ft-l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
 .ft-r{font-size:11px;color:#87B229;letter-spacing:.1em}
 @media(max-width:700px){.week-body{grid-template-columns:1fr}}
+.blog-doc-banner{display:flex;align-items:center;gap:12px;background:#3a1c57;border-radius:10px;padding:14px 18px;margin-bottom:20px;flex-wrap:wrap}
+.blog-doc-icon{font-size:22px;flex-shrink:0}
+.blog-doc-info{flex:1;min-width:160px}
+.blog-doc-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px}
+.blog-doc-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.04em}
+.blog-doc-input{flex:2;min-width:180px;padding:7px 10px;border:1px solid rgba(255,255,255,.15);border-radius:6px;font-family:Poppins,sans-serif;font-size:11px;color:#fff;background:rgba(255,255,255,.08);outline:none;transition:border-color .2s}
+.blog-doc-input:focus{border-color:#87B229}
+.blog-doc-input::placeholder{color:rgba(255,255,255,.3)}
+.blog-doc-btn{padding:8px 16px;background:#87B229;color:#2a1f38;border:none;border-radius:6px;font-family:Poppins,sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:background .2s;display:inline-flex;align-items:center;gap:5px}
+.blog-doc-btn:hover{background:#9ecf30}
+.blog-doc-btn.disabled{background:#e5e0ee;color:#7a6f85;pointer-events:none;cursor:default}
 /* ── AGENCIA TAB ── */
 .agencia-view{padding:20px;max-width:1400px;margin:0 auto}
 .ag-hero{background:#3a1c57;border-radius:12px;padding:28px 28px 24px;margin-bottom:24px;position:relative;overflow:hidden}
@@ -151,11 +162,58 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f4f0fa;color:#2a1f38;m
 @keyframes cpFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(900deg);opacity:0}}
 /* toast container removed — replaced by overlay */
 .toast-container{display:none}
+
+/* ── AUTH GATE ── */
+.auth-overlay{position:fixed;inset:0;z-index:99999;background:#3a1c57;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-box{background:#fff;border-radius:16px;padding:40px 36px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.auth-logo{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#87B229;font-weight:700;margin-bottom:16px}
+.auth-title{font-size:22px;font-weight:800;color:#3a1c57;letter-spacing:-.02em;margin-bottom:6px}
+.auth-sub{font-size:12px;color:#7a6f85;line-height:1.6;margin-bottom:24px}
+.auth-input{width:100%;padding:12px 16px;border:1.5px solid rgba(88,45,129,.2);border-radius:8px;font-family:Poppins,sans-serif;font-size:14px;color:#2a1f38;outline:none;text-align:center;letter-spacing:.12em;transition:border-color .2s;margin-bottom:10px}
+.auth-input:focus{border-color:#582D81}
+.auth-btn{width:100%;padding:13px;background:#582D81;color:#fff;border:none;border-radius:8px;font-family:Poppins,sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-bottom:10px}
+.auth-btn:hover{background:#6e3d9a}
+.auth-error{font-size:11px;color:#e72078;font-weight:600;letter-spacing:.06em;min-height:18px;margin-bottom:4px}
+.auth-note{font-size:10px;color:#bbb;line-height:1.5}
+
+.blog-card{background:#fff;border:1.5px solid rgba(88,45,129,.15);border-radius:10px;padding:16px;margin-bottom:10px;display:flex;flex-direction:column;gap:10px}
+.blog-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.blog-card-tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.blog-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px}
+.blog-num{font-size:11px;font-weight:700;color:#7a6f85;flex-shrink:0;margin-top:2px}
+.blog-title-input{width:100%;padding:9px 12px;border:1.5px solid rgba(88,45,129,.15);border-radius:7px;font-family:Poppins,sans-serif;font-size:13px;font-weight:600;color:#2a1f38;outline:none;background:#f8f6f2;transition:border-color .2s;line-height:1.4}
+.blog-title-input:focus{border-color:#582D81;background:#fff}
+.blog-keyword-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.blog-kw-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7a6f85;font-weight:700;white-space:nowrap;flex-shrink:0}
+.blog-kw-input{flex:1;min-width:160px;padding:6px 10px;border:1px solid rgba(88,45,129,.12);border-radius:5px;font-family:Poppins,sans-serif;font-size:11px;color:#582D81;font-weight:500;outline:none;background:#fff;transition:border-color .2s}
+.blog-kw-input:focus{border-color:#582D81}
+.blog-fields{display:flex;flex-direction:column;gap:8px}
+.blog-objetivo{background:#f4f0fa;border-left:4px solid #582D81;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#3a1c57;line-height:1.6}
+.blog-objetivo b{font-weight:700;display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#87B229;margin-bottom:4px}
+.blog-stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.blog-stat-pill{font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.06em}
+.blog-add-btn{display:flex;align-items:center;gap:7px;width:100%;padding:10px 14px;border:1px dashed rgba(88,45,129,.2);border-radius:7px;background:none;cursor:pointer;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#582D81;transition:all .2s;margin-top:4px}
+.blog-add-btn:hover{background:#ede8f7;border-color:#582D81}
+.blog-empty-state{background:#e0f4fb;border:1.5px dashed #0ea5c9;border-radius:10px;padding:32px;text-align:center;margin-bottom:16px}
+.bes-icon{font-size:40px;margin-bottom:12px}
+.bes-title{font-size:15px;font-weight:700;color:#0e6b8f;margin-bottom:8px}
+.bes-text{font-size:12px;color:#2a1f38;line-height:1.7;max-width:480px;margin:0 auto}
 </style>
 </head>
 <body>
+<div id="auth-overlay" class="auth-overlay" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">Los Martes No Hay Luna</div>
+    <div class="auth-title">Portal privado</div>
+    <div class="auth-sub">Este espacio es exclusivo para el equipo de LMNHL.<br>Introduce la contraseña para acceder.</div>
+    <div id="auth-error" class="auth-error"></div>
+    <input id="auth-input" class="auth-input" type="password" placeholder="Contraseña" autocomplete="off">
+    <button id="auth-btn" class="auth-btn">Acceder →</button>
+    <div class="auth-note">¿Necesitas acceso? Escríbenos a<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="08606764694864677b65697a7c6d7b6667606971647d6669266b6765">[email&#160;protected]</a></div>
+  </div>
+</div>
 <div id="root"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script>
 const {useState,useEffect,useRef,useCallback}=React;
@@ -699,8 +757,11 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onUpdateTopic,o
       ),
       React.createElement('span',{className:'wk-arrow'},open?'▲':'▼')
     ),
-    open&&React.createElement('div',{className:'week-body'},
-      React.createElement('div',{className:'platform'},
+    open&&React.createElement('div',{
+        className:'week-body',
+        style:{gridTemplateColumns:(planWeek.ig.length>0&&planWeek.li.length>0)?'1fr 1fr':'1fr'}
+      },
+      planWeek.ig.length>0&&React.createElement('div',{className:'platform'},
         React.createElement('div',{className:'plat-hdr'},
           React.createElement('span',{style:{fontSize:14,marginRight:4}},'📸'),
           React.createElement('span',{className:'plat-name'},'Instagram'),
@@ -710,7 +771,7 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onUpdateTopic,o
         (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove})),
         React.createElement(AddButton,{plat:'ig',onAdd:type=>onAddCustom('ig',type)})
       ),
-      React.createElement('div',{className:'platform'},
+      planWeek.li.length>0&&React.createElement('div',{className:'platform'},
         React.createElement('div',{className:'plat-hdr li'},
           React.createElement('span',{style:{fontSize:14,marginRight:4}},'💼'),
           React.createElement('span',{className:'plat-name',style:{color:'#582D81'}},'LinkedIn'),
@@ -724,8 +785,130 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onUpdateTopic,o
   );
 }
 
+function BlogView({month,blogPlan,blogState,updateBlogArticle,blogPosts,addCustomBlogPost,updateCustomBlog,deleteCustomBlog,fireToast,catColors,catBg,embudoStyle,personaStyle,blogDocLink,saveBlogDocLink}){
+  const plan=blogPlan[month];
+  const monthName=(MONTHS.find(m=>m.key===month)||{name:''}).name;
+  const SC_BLOG={
+    pendiente:{label:'Pendiente',bg:'#f4f0fa',color:'#7a6f85',bc:'#ccc',next:'revision'},
+    revision:{label:'En revisión',bg:'#fffbeb',color:'#92400e',bc:'#fcd34d',next:'aprobado'},
+    aprobado:{label:'Aprobado',bg:'#f0fdf4',color:'#166534',bc:'#86efac',next:'pendiente'},
+  };
+
+  // stats
+  const allArts=plan?plan.articulos:[];
+  const allStates=allArts.map(a=>(blogState[month]&&blogState[month][a.id])||{});
+  const aprCount=allStates.filter(s=>s.status==='aprobado').length;
+  const revCount=allStates.filter(s=>s.status==='revision').length;
+
+  if(!plan) return React.createElement('div',{className:'body'},
+    React.createElement('div',{className:'mth-hd'},
+      React.createElement('div',{className:'mth-accent'}),
+      React.createElement('div',null,
+        React.createElement('div',{className:'mth-name'},monthName+' 2026 — Blog SEO'),
+        React.createElement('div',{className:'mth-sub'},'Sin artículos planificados para este mes')
+      )
+    ),
+    React.createElement('div',{className:'blog-empty-state'},
+      React.createElement('div',{className:'bes-icon'},'📅'),
+      React.createElement('div',{className:'bes-title'},'Sin plan para este mes'),
+      React.createElement('div',{className:'bes-text'},'El plan del blog cubre de abril a septiembre de 2026. Puedes añadir artículos manualmente con el botón de abajo.'),
+    ),
+    (blogPosts[month]||[]).map((item,i)=>React.createElement(PostCard,{key:'bp'+i,planCfg:null,data:{...item,topic:item.topic||''},onUpdate:(f,v)=>updateCustomBlog(month,i,f,v),onDelete:()=>deleteCustomBlog(month,i),onApprove:fireToast})),
+    React.createElement('button',{className:'blog-add-btn',onClick:()=>addCustomBlogPost(month,'articulo')},React.createElement('span',{style:{width:18,height:18,borderRadius:'50%',background:'#582D81',color:'#fff',display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:13,fontWeight:700}},'+')+' Añadir artículo'),
+  );
+
+  return React.createElement('div',{className:'body'},
+    React.createElement('div',{className:'mth-hd'},
+      React.createElement('div',{className:'mth-accent'}),
+      React.createElement('div',null,
+        React.createElement('div',{className:'mth-name'},monthName+' 2026 — Blog SEO'),
+        React.createElement('div',{className:'mth-sub'},plan.articulos.length+' artículos planificados · '+aprCount+' aprobados · '+revCount+' en revisión')
+      )
+    ),
+    React.createElement('div',{className:'blog-objetivo'},
+      React.createElement('b',null,'Objetivo del mes'),
+      plan.objetivo
+    ),
+    React.createElement('div',{className:'blog-stats-row'},
+      ['TOFU','MOFU','BOFU'].map(e=>{
+        const count=plan.articulos.filter(a=>a.embudo===e).length;
+        const es=embudoStyle[e];
+        return React.createElement('span',{key:e,className:'blog-stat-pill',style:{background:es.bg,color:es.color}},es.label+': '+count);
+      })
+    ),
+    plan.articulos.map((art,i)=>{
+      const st=blogState[month]&&blogState[month][art.id]||{};
+      const status=st.status||'pendiente';
+      const s=SC_BLOG[status]||SC_BLOG.pendiente;
+      const cc=catColors[art.categoria]||'#582D81';
+      const cb=catBg[art.categoria]||'#f4f0fa';
+      const es=embudoStyle[art.embudo]||embudoStyle.TOFU;
+      const ps=personaStyle[art.persona]||personaStyle.Ambos;
+      return React.createElement('div',{key:art.id,className:'blog-card',style:{borderLeft:'4px solid '+cc}},
+        React.createElement('div',{className:'blog-card-top'},
+          React.createElement('div',{className:'blog-card-tags'},
+            React.createElement('span',{className:'blog-num'},'#'+(i+1).toString().padStart(2,'0')),
+            React.createElement('span',{className:'blog-tag',style:{background:cb,color:cc}},art.categoria),
+            React.createElement('span',{className:'blog-tag',style:{background:es.bg,color:es.color}},es.label),
+            React.createElement('span',{className:'blog-tag',style:{background:ps.bg,color:ps.color}},art.persona)
+          ),
+          React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},
+            onClick:()=>{
+              updateBlogArticle(month,art.id,'status',s.next);
+              if(s.next==='aprobado')fireToast();
+            }},s.label)
+        ),
+        React.createElement('input',{className:'blog-title-input',type:'text',
+          value:st.titulo!==undefined?st.titulo:art.titulo,
+          onChange:e=>updateBlogArticle(month,art.id,'titulo',e.target.value)
+        }),
+        React.createElement('div',{className:'blog-keyword-row'},
+          React.createElement('span',{className:'blog-kw-label'},'🔑 Keyword'),
+          React.createElement('input',{className:'blog-kw-input',type:'text',
+            value:st.keyword!==undefined?st.keyword:art.keyword,
+            onChange:e=>updateBlogArticle(month,art.id,'keyword',e.target.value)
+          })
+        ),
+        React.createElement('div',{className:'blog-fields'},
+          React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:8}},
+            React.createElement('div',null,
+              React.createElement('label',{className:'date-label'},'Fecha de publicación'),
+              React.createElement('input',{className:'date-input',type:'date',value:st.date||'',onChange:e=>updateBlogArticle(month,art.id,'date',e.target.value)})
+            ),
+            React.createElement('div',{style:{display:'flex',alignItems:'flex-end',gap:8}},
+              React.createElement('div',{style:{flex:1}},
+                React.createElement('label',{className:'date-label',style:{color:'#3d6010'}},'Borrador en Drive (para revisar y aprobar)'),
+                React.createElement('input',{className:'link-input',style:{borderColor:st.drive?'rgba(135,178,41,.5)':'rgba(88,45,129,.12)',background:st.drive?'#f6fbee':'#fff'},type:'text',value:st.drive||'',onChange:e=>updateBlogArticle(month,art.id,'drive',e.target.value),placeholder:'https://docs.google.com/document/...'})
+              ),
+              st.drive?React.createElement('a',{href:st.drive,target:'_blank',rel:'noopener noreferrer',style:{flexShrink:0,width:34,height:34,borderRadius:7,background:'#87B229',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:15,textDecoration:'none',fontWeight:700,marginBottom:1}},'\u2197'):null
+            ),
+            React.createElement('div',{style:{display:'flex',alignItems:'flex-end',gap:8}},
+              React.createElement('div',{style:{flex:1}},
+                React.createElement('label',{className:'date-label'},'Artículo publicado en la web'),
+                React.createElement('input',{className:'link-input',type:'text',value:st.link||'',onChange:e=>updateBlogArticle(month,art.id,'link',e.target.value),placeholder:'https://losmartesnohayluna.com/blog/...'})
+              ),
+              st.link?React.createElement('a',{href:st.link,target:'_blank',rel:'noopener noreferrer',style:{flexShrink:0,width:34,height:34,borderRadius:7,background:'#582D81',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:15,textDecoration:'none',fontWeight:700,marginBottom:1}},'\u2197'):null
+            )
+          ),
+          React.createElement('textarea',{className:'post-textarea',style:{minHeight:60},value:st.notas||'',onChange:e=>updateBlogArticle(month,art.id,'notas',e.target.value),placeholder:'Notas internas, estado de redacción, pendientes...'})
+        )
+      );
+    }),
+    (blogPosts[month]||[]).length>0&&React.createElement('div',{style:{marginTop:8}},
+      (blogPosts[month]||[]).map((item,i)=>React.createElement(PostCard,{key:'bp'+i,planCfg:null,data:{...item,topic:item.topic||''},onUpdate:(f,v)=>updateCustomBlog(month,i,f,v),onDelete:()=>deleteCustomBlog(month,i),onApprove:fireToast}))
+    ),
+    React.createElement('button',{className:'blog-add-btn',onClick:()=>addCustomBlogPost(month,'articulo')},
+      '+ Añadir artículo extra'
+    ),
+    React.createElement('div',{className:'footer'},
+      React.createElement('span',{className:'ft-l'},'LMNHL · Blog SEO 2026 · Abr–Sep · 24 artículos'),
+      React.createElement('span',{className:'ft-r'},'4 artículos/mes · 1 por semana · TOFU + MOFU + BOFU')
+    )
+  );
+}
+
 function App(){
-  const[section,setSection]=useState('plan'); // 'agencia' | 'plan'
+  const[section,setSection]=useState('rrss'); // 'agencia' | 'blog' | 'rrss' | 'linkedin'
   const[month,setMonth]=useState('2026-04');
   const[state,setState]=useState(()=>loadLS());
   const[saved,setSaved]=useState(true);
@@ -786,6 +969,85 @@ function App(){
       return n;
     });
   },[]);
+
+
+  const BLOG_PLAN={
+    '2026-04':{
+      objetivo:'Establecer autoridad en IA y Marketing. Preparar el terreno para el lanzamiento de mayo.',
+      articulos:[
+        {id:'b01',titulo:'¿Qué es un agente de IA y para qué sirve en una empresa mediana?',categoria:'IA',keyword:'agente inteligencia artificial empresa',persona:'Carlos',embudo:'TOFU'},
+        {id:'b02',titulo:'Por qué el 70% de las webs de PYMEs no convierte (checklist de diagnóstico)',categoria:'Diseño Web',keyword:'web que convierte pyme',persona:'Ambos',embudo:'TOFU'},
+        {id:'b03',titulo:'Cómo crear un embudo de ventas digital desde cero sin experiencia técnica',categoria:'Marketing Digital',keyword:'embudo ventas digital pyme',persona:'Marta',embudo:'MOFU'},
+        {id:'b04',titulo:'Las 5 métricas que tu agencia de marketing debería enviarte cada mes',categoria:'Herramientas',keyword:'métricas marketing digital',persona:'Carlos',embudo:'MOFU'},
+      ]
+    },
+    '2026-05':{
+      objetivo:'Máxima visibilidad en búsquedas de IA aplicada. Generar leads directos para el nuevo servicio.',
+      articulos:[
+        {id:'b05',titulo:'Apps de IA para tu empresa: qué son, cuánto cuestan y cuándo tiene sentido contratarlas',categoria:'IA',keyword:'apps inteligencia artificial empresas',persona:'Carlos',embudo:'TOFU'},
+        {id:'b06',titulo:'Automatizar el marketing de tu empresa con IA: guía paso a paso para no técnicos',categoria:'Automatización',keyword:'automatizar marketing con IA',persona:'Marta',embudo:'MOFU'},
+        {id:'b07',titulo:'Caso real: cómo una empresa de servicios redujo un 40% su tiempo administrativo con IA',categoria:'Casos de Éxito',keyword:'caso real automatización pyme',persona:'Ambos',embudo:'BOFU'},
+        {id:'b08',titulo:'Google Ads vs Meta Ads: cuál elegir según tu tipo de negocio y presupuesto',categoria:'Marketing Digital',keyword:'google ads vs meta ads pymes',persona:'Marta',embudo:'TOFU'},
+      ]
+    },
+    '2026-06':{
+      objetivo:'Posicionar en keywords de cola larga. Alimentar la consideración de quienes ya nos conocen.',
+      articulos:[
+        {id:'b09',titulo:'Branding para PYMEs: cómo construir una identidad que atrae al cliente correcto',categoria:'Marketing Digital',keyword:'branding pymes españa',persona:'Ambos',embudo:'TOFU'},
+        {id:'b10',titulo:'SEO en 2026: lo que ha cambiado y lo que sigue siendo igual de importante',categoria:'SEO',keyword:'SEO 2026 pymes',persona:'Marta',embudo:'TOFU'},
+        {id:'b11',titulo:'Cómo delegar el marketing de tu empresa sin perder el control',categoria:'Herramientas',keyword:'delegar marketing empresa',persona:'Carlos',embudo:'MOFU'},
+        {id:'b12',titulo:'El CRM que necesita una PYME de servicios: guía para elegir sin equivocarse',categoria:'Herramientas',keyword:'CRM pyme servicios',persona:'Carlos',embudo:'MOFU'},
+      ]
+    },
+    '2026-07':{
+      objetivo:'Artículos orientados a BOFU. Reforzar la propuesta de valor de LMNHL directamente.',
+      articulos:[
+        {id:'b13',titulo:'Qué esperar de una consultoría de marketing: preguntas reales con respuestas honestas',categoria:'Casos de Éxito',keyword:'contratar consultoría marketing',persona:'Carlos',embudo:'BOFU'},
+        {id:'b14',titulo:'Cómo pasar del boca a boca a la captación digital en 90 días: el plan completo',categoria:'Marketing Digital',keyword:'captación digital desde cero',persona:'Ambos',embudo:'MOFU'},
+        {id:'b15',titulo:'Inteligencia artificial en ventas: 6 aplicaciones reales para empresas sin departamento técnico',categoria:'IA',keyword:'IA para ventas pyme',persona:'Carlos',embudo:'MOFU'},
+        {id:'b16',titulo:'Caso real: de 0 a 15 leads mensuales en 4 meses con SEO y LinkedIn',categoria:'Casos de Éxito',keyword:'caso éxito leads seo linkedin',persona:'Ambos',embudo:'BOFU'},
+      ]
+    },
+    '2026-08':{
+      objetivo:'Piezas evergreen que posicionen a largo plazo. Ritmo más tranquilo, máxima calidad.',
+      articulos:[
+        {id:'b17',titulo:'Guía definitiva de redes sociales para empresas de servicios en España',categoria:'Redes Sociales',keyword:'redes sociales empresas servicios España',persona:'Marta',embudo:'TOFU'},
+        {id:'b18',titulo:'Cuánto cuesta el marketing digital para una PYME en 2026: guía de precios reales',categoria:'Marketing Digital',keyword:'precio marketing digital pyme',persona:'Carlos',embudo:'TOFU'},
+        {id:'b19',titulo:'Productividad con IA: las 8 tareas que tu equipo debería automatizar esta semana',categoria:'IA',keyword:'productividad inteligencia artificial equipo',persona:'Ambos',embudo:'MOFU'},
+        {id:'b20',titulo:'Errores de diseño web que cuestan clientes: lista de los más frecuentes en PYMEs',categoria:'Diseño Web',keyword:'errores diseño web pyme',persona:'Marta',embudo:'TOFU'},
+      ]
+    },
+    '2026-09':{
+      objetivo:'Reactivar leads fríos. Posicionar para la recta final del año. Empujar a la acción antes de Q4.',
+      articulos:[
+        {id:'b21',titulo:'Por qué septiembre es el mejor mes para arrancar tu estrategia digital: datos y razones',categoria:'Marketing Digital',keyword:'estrategia digital septiembre pyme',persona:'Ambos',embudo:'TOFU'},
+        {id:'b22',titulo:'Cómo hacer un diagnóstico de marketing en un día: la guía que usan los consultores',categoria:'Marketing Digital',keyword:'diagnóstico marketing empresa',persona:'Carlos',embudo:'MOFU'},
+        {id:'b23',titulo:'IA y atención al cliente: cómo mejorar la experiencia sin perder el trato humano',categoria:'IA',keyword:'IA atención al cliente pyme',persona:'Ambos',embudo:'MOFU'},
+        {id:'b24',titulo:'Tu plan de marketing para Q4 2026: las decisiones que hay que tomar ahora',categoria:'Marketing Digital',keyword:'plan marketing Q4',persona:'Carlos',embudo:'BOFU'},
+      ]
+    },
+  };
+
+  const CAT_COLORS={
+    'IA':'#582D81','Marketing Digital':'#87B229','Casos de Éxito':'#e72078',
+    'Herramientas':'#0ea5c9','Automatización':'#8b5cf6','SEO':'#f59e0b',
+    'Diseño Web':'#10b981','Redes Sociales':'#f97316',
+  };
+  const CAT_BG={
+    'IA':'#ede8f7','Marketing Digital':'#edf7d4','Casos de Éxito':'#fce7f3',
+    'Herramientas':'#e0f4fb','Automatización':'#ede9fe','SEO':'#fef3c7',
+    'Diseño Web':'#d1fae5','Redes Sociales':'#ffedd5',
+  };
+  const EMBUDO_STYLE={
+    'TOFU':{bg:'#dbeafe',color:'#1e40af',label:'TOFU · Atraer'},
+    'MOFU':{bg:'#fef9c3',color:'#92400e',label:'MOFU · Educar'},
+    'BOFU':{bg:'#dcfce7',color:'#166534',label:'BOFU · Convertir'},
+  };
+  const PERSONA_STYLE={
+    'Carlos':{bg:'#ede8f7',color:'#582D81'},
+    'Marta':{bg:'#fce7f3',color:'#b5005a'},
+    'Ambos':{bg:'#edf7d4',color:'#3d6010'},
+  };
 
   const AG_SECTIONS=[
     {id:'identidad',title:'Identidad de Marca',icon:'🎨',bg:'#ede8f7',dot:'#582D81',items:[
@@ -875,7 +1137,65 @@ function App(){
   // Milestone messages
   const MILESTONES={10:'¡10 posts aprobados! 🎊',25:'¡25 aprobados! Eres increíble 🏅',50:'¡50 posts! Leyenda del contenido 👑',100:'¡100 posts aprobados! LMNHL te ama 💜'};
 
-  const mData=(section==='plan'&&state[month])||[];
+  const[blogDocLink,setBlogDocLink]=useState(()=>{
+    try{return localStorage.getItem('lmnhl_blog_doc')||'';}catch(e){return '';}
+  });
+  const saveBlogDocLink=useCallback((val)=>{
+    setBlogDocLink(val);
+    try{localStorage.setItem('lmnhl_blog_doc',val);}catch(e){}
+  },[]);
+  const[blogState,setBlogState]=useState(()=>{
+    try{const r=localStorage.getItem('lmnhl_blog_state');return r?JSON.parse(r):{};}catch(e){return {};}
+  });
+  const updateBlogArticle=useCallback((mk,id,field,val)=>{
+    setBlogState(prev=>{
+      const n={...prev,[mk]:{...(prev[mk]||{}),[id]:{...(prev[mk]&&prev[mk][id]||{}), [field]:val}}};
+      try{localStorage.setItem('lmnhl_blog_state',JSON.stringify(n));}catch(e){}
+      return n;
+    });
+  },[]);
+
+  const addCustomBlog=useCallback((mk,type)=>{
+    setState(prev=>{
+      const n=JSON.parse(JSON.stringify(prev));
+      if(!n[mk])return prev;
+      n[mk]=n[mk].map(w=>({...w})); // ensure array
+      if(!n[mk].customBlog)n[mk].customBlog=[];
+      n[mk].customBlog=n[mk].customBlog||[];
+      // store at month level, not week level
+      return prev; // blog posts at month level handled separately
+    });
+  },[]);
+  const[blogPosts,setBlogPosts]=useState(()=>{
+    try{const r=localStorage.getItem('lmnhl_blog');return r?JSON.parse(r):{};}catch(e){return {};}
+  });
+  const addCustomBlogPost=useCallback((mk,type)=>{
+    setBlogPosts(prev=>{
+      const n={...prev,[mk]:[...(prev[mk]||[]),{type,topic:'',text:'',link:'',date:'',status:'pendiente'}]};
+      try{localStorage.setItem('lmnhl_blog',JSON.stringify(n));}catch(e){}
+      return n;
+    });
+  },[]);
+  const updateCustomBlog=useCallback((mk,i,field,val)=>{
+    setBlogPosts(prev=>{
+      const arr=[...(prev[mk]||[])];
+      if(arr[i])arr[i]={...arr[i],[field]:val};
+      const n={...prev,[mk]:arr};
+      try{localStorage.setItem('lmnhl_blog',JSON.stringify(n));}catch(e){}
+      return n;
+    });
+  },[]);
+  const deleteCustomBlog=useCallback((mk,i)=>{
+    setBlogPosts(prev=>{
+      const arr=[...(prev[mk]||[])];
+      arr.splice(i,1);
+      const n={...prev,[mk]:arr};
+      try{localStorage.setItem('lmnhl_blog',JSON.stringify(n));}catch(e){}
+      return n;
+    });
+  },[]);
+
+  const mData=(['blog','rrss','linkedin'].includes(section)&&state[month])||[];
   const all=mData.flatMap(w=>[...w.ig,...w.li,...(w.customIg||[]),...(w.customLi||[])]);
   const apr=all.filter(p=>p.status==='aprobado').length;
   const rev=all.filter(p=>p.status==='revision').length;
@@ -889,7 +1209,12 @@ function App(){
       React.createElement('div',{className:'hdr-top'},
         React.createElement('div',null,
           React.createElement('div',{className:'hdr-eyebrow'},'Los Martes No Hay Luna'),
-          React.createElement('div',{className:'hdr-title'},section==='agencia'?'Recursos de Agencia':'Plan de Contenidos 2026 — Abril a Diciembre')
+          React.createElement('div',{className:'hdr-title'},
+          section==='agencia'?'Recursos de Agencia':
+          section==='blog'?'Blog SEO — Plan de Contenidos':
+          section==='linkedin'?'LinkedIn — Plan de Contenidos':
+          'RRSS Instagram — Plan de Contenidos'
+        )
         ),
         React.createElement('div',{className:'hdr-stats'},
           React.createElement('div',{className:'stat'},React.createElement('div',{className:'stat-n',style:{color:'#4ade80'}},apr),React.createElement('div',{className:'stat-l'},'Aprobados mes')),
@@ -909,11 +1234,21 @@ function App(){
           onClick:()=>setSection('agencia')
         },'★ Agencia'),
         React.createElement('button',{
-          className:'tab '+(section==='plan'?'on':''),
-          onClick:()=>setSection('plan')
-        },'📅 Plan de Contenidos')
+          className:'tab '+(section==='blog'?'on':''),
+          style:{borderBottomColor:section==='blog'?'#0ea5c9':'transparent',color:section==='blog'?'#67d4f0':'rgba(255,255,255,.4)'},
+          onClick:()=>setSection('blog')
+        },'✍ Blog SEO'),
+        React.createElement('button',{
+          className:'tab '+(section==='rrss'?'on':''),
+          onClick:()=>setSection('rrss')
+        },'📸 RRSS'),
+        React.createElement('button',{
+          className:'tab '+(section==='linkedin'?'on':''),
+          style:{borderBottomColor:section==='linkedin'?'#87B229':'transparent',color:section==='linkedin'?'#87B229':'rgba(255,255,255,.4)'},
+          onClick:()=>setSection('linkedin')
+        },'💼 LinkedIn')
       ),
-      section==='plan'&&React.createElement('div',{className:'month-tabs'},
+      (section==='blog'||section==='rrss'||section==='linkedin')&&React.createElement('div',{className:'month-tabs'},
         MONTHS.map(m=>React.createElement('button',{
           key:m.key,
           className:'month-tab '+(m.key===month?'on':''),
@@ -972,6 +1307,36 @@ function App(){
         'Los enlaces se guardan automáticamente en tu navegador. ',
         React.createElement('b',null,'Cuando tengas las URLs de Drive, pégalas y quedarán guardadas para siempre.')
       )
+    ):section==='blog'?React.createElement(BlogView,{
+        month,blogPlan:BLOG_PLAN,blogState,updateBlogArticle,blogPosts,addCustomBlogPost,updateCustomBlog,deleteCustomBlog,fireToast,catColors:CAT_COLORS,catBg:CAT_BG,embudoStyle:EMBUDO_STYLE,personaStyle:PERSONA_STYLE,blogDocLink,saveBlogDocLink
+      }):section==='linkedin'?React.createElement('div',{className:'body'},
+      React.createElement('div',{className:'mth-hd'},
+        React.createElement('div',{className:'mth-accent'}),
+        React.createElement('div',null,
+          React.createElement('div',{className:'mth-name'},
+            (MONTHS.find(m=>m.key===month)||{name:''}).name+' 2026 — LinkedIn'
+          ),
+          React.createElement('div',{className:'mth-sub'},
+            (mData.reduce((a,w)=>a+(w.li||[]).length+(w.customLi||[]).length,0))+' posts LI · '+pct+'% completado'
+          )
+        )
+      ),
+      mData.map((dw,wi)=>React.createElement(WeekSection,{
+        key:wi,mk:month,wi,
+        weekLabel:'Semana '+(wi+1)+' — '+((MONTHS.find(m=>m.key===month)||{weeks:[]}).weeks[wi]||''),
+        planWeek:{ig:[],li:PLAN[month][wi].li},
+        dataWeek:{...dw,ig:[]},
+        onUpdate:(plat,pi,f,v)=>update(month,wi,plat,pi,f,v),
+        onAddCustom:(plat,type)=>addCustom(month,wi,plat,type),
+        onUpdateCustom:(plat,ci,f,v)=>updateCustom(month,wi,plat,ci,f,v),
+        onDeleteCustom:(plat,ci)=>deleteCustom(month,wi,plat,ci),
+        onApprove:fireToast,
+        defOpen:wi===0,
+      })),
+      React.createElement('div',{className:'footer'},
+        React.createElement('span',{className:'ft-l'},'LMNHL · LinkedIn 2026'),
+        React.createElement('span',{className:'ft-r'},'Autoridad + Estrategia + Opinión + Historia')
+      )
     ):React.createElement('div',{className:'body'},
       React.createElement('div',{className:'mth-hd'},
         React.createElement('div',{className:'mth-accent'}),
@@ -980,11 +1345,11 @@ function App(){
           React.createElement('div',{className:'mth-sub'},pct+'% completado · '+(mo.weeks.length*3)+' posts IG base · '+(mo.weeks.length*4)+' posts LI base')
         )
       ),
-      mo.weeks.map((wl,wi)=>React.createElement(WeekSection,{
+      mo&&mo.weeks.map((wl,wi)=>React.createElement(WeekSection,{
         key:wi,mk:month,wi,
         weekLabel:'Semana '+(wi+1)+' — '+wl,
-        planWeek:PLAN[month][wi],
-        dataWeek:mData[wi]||{ig:[],li:[],customIg:[],customLi:[]},
+        planWeek:{ig:PLAN[month][wi].ig, li:[]},
+        dataWeek:{...(mData[wi]||{ig:[],li:[],customIg:[],customLi:[]}), li:[], customLi:[]},
         onUpdate:(plat,pi,f,v)=>update(month,wi,plat,pi,f,v),
         onAddCustom:(plat,type)=>addCustom(month,wi,plat,type),
         onUpdateCustom:(plat,ci,f,v)=>updateCustom(month,wi,plat,ci,f,v),
@@ -1032,6 +1397,37 @@ function App(){
 }
 
 ReactDOM.render(React.createElement(App),document.getElementById('root'));
+
+// ── AUTH GATE LOGIC ──
+(function(){
+  var KEY='lmnhl_auth_v1';
+  var PWD='equipoLMNHL';
+  if(sessionStorage.getItem(KEY)==='1'){
+    document.getElementById('auth-overlay').style.display='none';
+    return;
+  }
+  document.getElementById('auth-overlay').style.display='flex';
+  function tryAccess(){
+    var val=document.getElementById('auth-input').value;
+    if(val===PWD){
+      sessionStorage.setItem(KEY,'1');
+      var o=document.getElementById('auth-overlay');
+      o.style.transition='opacity .4s';
+      o.style.opacity='0';
+      setTimeout(function(){o.style.display='none';},420);
+    } else {
+      document.getElementById('auth-error').textContent='Contraseña incorrecta. Inténtalo de nuevo.';
+      document.getElementById('auth-input').value='';
+      document.getElementById('auth-input').focus();
+      setTimeout(function(){document.getElementById('auth-error').textContent='';},2500);
+    }
+  }
+  document.getElementById('auth-btn').addEventListener('click',tryAccess);
+  document.getElementById('auth-input').addEventListener('keydown',function(e){
+    if(e.key==='Enter')tryAccess();
+  });
+  document.getElementById('auth-input').focus();
+})();
 </script>
 </body>
 </html>
