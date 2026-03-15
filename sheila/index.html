@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100%}
 body{font-family:Poppins,system-ui,sans-serif;background:#f4f0fa;color:#2a1f38;min-height:100vh}
 .hdr{background:#3a1c57;padding:16px 20px 0;position:sticky;top:0;z-index:50}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
@@ -21,6 +22,11 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f4f0fa;color:#2a1f38;m
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:10px 16px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
 .tab.on{color:#87B229;border-bottom-color:#87B229}
+.month-tabs{background:#582D81;padding:0 20px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.07)}
+.month-tabs::-webkit-scrollbar{display:none}
+.month-tab{padding:9px 14px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.month-tab.on{color:#fff;border-bottom-color:rgba(255,255,255,.6);font-weight:700}
+.month-tab:hover:not(.on){color:rgba(255,255,255,.75)}
 .prog{height:3px;background:rgba(0,0,0,.1)}
 .prog-bar{height:3px;background:#87B229;transition:width .4s}
 .body{padding:20px;max-width:1400px;margin:0 auto}
@@ -88,6 +94,37 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f4f0fa;color:#2a1f38;m
 .ft-l{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
 .ft-r{font-size:11px;color:#87B229;letter-spacing:.1em}
 @media(max-width:700px){.week-body{grid-template-columns:1fr}}
+/* ── AGENCIA TAB ── */
+.agencia-view{padding:20px;max-width:1400px;margin:0 auto}
+.ag-hero{background:#3a1c57;border-radius:12px;padding:28px 28px 24px;margin-bottom:24px;position:relative;overflow:hidden}
+.ag-hero::after{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;border:36px solid rgba(135,178,41,.07);pointer-events:none}
+.ag-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#87B229;font-weight:700;margin-bottom:8px}
+.ag-hero h2{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:6px}
+.ag-hero p{font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;max-width:500px}
+.ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.ag-card{background:#fff;border:1.5px solid rgba(88,45,129,.15);border-radius:10px;overflow:hidden}
+.ag-card-hdr{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;border-bottom:1px solid rgba(88,45,129,.08)}
+.ag-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ag-card-title{font-size:13px;font-weight:700;color:#2a1f38;letter-spacing:-.01em}
+.ag-card-sub{font-size:10px;color:#7a6f85;margin-top:1px}
+.ag-items{padding:10px 8px;display:flex;flex-direction:column;gap:4px}
+.ag-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;transition:background .15s}
+.ag-item:hover{background:#f4f0fa}
+.ag-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ag-item-label{font-size:12px;color:#2a1f38;font-weight:500;flex:1;line-height:1.3}
+.ag-item-status{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.ag-item-status.done{background:#dcfce7;color:#166534}
+.ag-item-status.pend{background:#fef9c3;color:#92400e}
+.ag-item-status.empty{background:#f4f0fa;color:#7a6f85}
+.ag-link-row{display:flex;align-items:center;gap:6px;margin-top:4px;padding:0 10px 10px}
+.ag-link-input{flex:1;padding:6px 10px;border:1px solid rgba(88,45,129,.15);border-radius:6px;font-family:inherit;font-size:11px;color:#7a6f85;outline:none;background:#f8f6f2;transition:border-color .2s}
+.ag-link-input:focus{border-color:#582D81;background:#fff}
+.ag-link-input::placeholder{color:#bbb;font-size:10px}
+.ag-link-btn{width:32px;height:32px;border-radius:6px;background:#582D81;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;text-decoration:none;flex-shrink:0;transition:background .2s}
+.ag-link-btn:hover{background:#6e3d9a}
+.ag-link-btn.disabled{background:#e5e0ee;cursor:default;pointer-events:none}
+.ag-footer-note{font-size:11px;color:#7a6f85;text-align:center;padding:16px;line-height:1.6}
+.ag-footer-note b{color:#582D81}
 /* ── CELEBRATION OVERLAY ── */
 .celebration-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .celebration-backdrop{position:fixed;inset:0;background:rgba(58,28,87,.55);animation:backdropIn .25s ease forwards}
@@ -688,9 +725,20 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onUpdateTopic,o
 }
 
 function App(){
+  const[section,setSection]=useState('plan'); // 'agencia' | 'plan'
   const[month,setMonth]=useState('2026-04');
   const[state,setState]=useState(()=>loadLS());
   const[saved,setSaved]=useState(true);
+  const[agLinks,setAgLinks]=useState(()=>{
+    try{const r=localStorage.getItem('lmnhl_ag_links');return r?JSON.parse(r):{};}catch(e){return {};}
+  });
+  const saveAgLink=(key,val)=>{
+    setAgLinks(prev=>{
+      const n={...prev,[key]:val};
+      try{localStorage.setItem('lmnhl_ag_links',JSON.stringify(n));}catch(e){}
+      return n;
+    });
+  };
   const[points,setPoints]=useState(()=>{try{return parseInt(localStorage.getItem('lmnhl_points')||'0');}catch(e){return 0;}});
   const[toasts,setToasts]=useState([]);
   const toastTimer=useRef({});
@@ -738,6 +786,45 @@ function App(){
       return n;
     });
   },[]);
+
+  const AG_SECTIONS=[
+    {id:'identidad',title:'Identidad de Marca',icon:'🎨',bg:'#ede8f7',dot:'#582D81',items:[
+      {key:'logo_drive',label:'Carpeta Drive — Logos y versiones'},
+      {key:'manual_corporativo',label:'Manual corporativo / Brand Book'},
+      {key:'colores_tipografias',label:'Colores corporativos y tipografías'},
+      {key:'favicon_iconos',label:'Favicon e iconos'},
+    ]},
+    {id:'estrategia',title:'Estrategia y Posicionamiento',icon:'🎯',bg:'#edf7d4',dot:'#87B229',items:[
+      {key:'mision_vision',label:'Misión, Visión y Valores'},
+      {key:'propuesta_valor',label:'Propuesta de valor'},
+      {key:'elevator_pitch',label:'Elevator pitch'},
+      {key:'diferenciacion',label:'Diferenciación vs competencia'},
+    ]},
+    {id:'clientes',title:'Cliente Ideal',icon:'👤',bg:'#fce7f3',dot:'#e72078',items:[
+      {key:'buyer_persona_carlos',label:'Buyer Persona — Carlos Romero (Consultoría)'},
+      {key:'buyer_persona_marta',label:'Buyer Persona — Marta Salgado (Apps IA)'},
+      {key:'customer_journey',label:'Customer Journey Map'},
+      {key:'objeciones',label:'Mapa de objeciones'},
+    ]},
+    {id:'comunicacion',title:'Comunicación y Contenido',icon:'💬',bg:'#e0f4fb',dot:'#0ea5c9',items:[
+      {key:'tono_voz',label:'Tono de voz y guía de estilo'},
+      {key:'mensajes_clave',label:'Mensajes clave y frases de marca'},
+      {key:'bio_instagram',label:'Bio Instagram optimizada'},
+      {key:'bio_linkedin',label:'Perfil LinkedIn optimizado'},
+    ]},
+    {id:'servicios',title:'Servicios y Tarifas',icon:'💼',bg:'#fef9c3',dot:'#d97706',items:[
+      {key:'tarifario',label:'Tarifario 2026-27'},
+      {key:'dossier_servicios',label:'Dossier de servicios'},
+      {key:'propuesta_tipo',label:'Propuesta tipo / plantilla'},
+      {key:'casos_exito',label:'Casos de éxito documentados'},
+    ]},
+    {id:'recursos',title:'Recursos y Herramientas',icon:'🛠️',bg:'#f4f0fa',dot:'#7a6f85',items:[
+      {key:'stack_herramientas',label:'Stack de herramientas del equipo'},
+      {key:'plantillas_canva',label:'Plantillas Canva de marca'},
+      {key:'drive_raiz',label:'Carpeta raíz de Drive — LMNHL'},
+      {key:'notion_workspace',label:'Notion — Workspace del equipo'},
+    ]},
+  ];
 
   const MESSAGES=[
     {emoji:'🚀',msg:'¡Marchando publicación!',pts:5},
@@ -788,7 +875,7 @@ function App(){
   // Milestone messages
   const MILESTONES={10:'¡10 posts aprobados! 🎊',25:'¡25 aprobados! Eres increíble 🏅',50:'¡50 posts! Leyenda del contenido 👑',100:'¡100 posts aprobados! LMNHL te ama 💜'};
 
-  const mData=state[month]||[];
+  const mData=(section==='plan'&&state[month])||[];
   const all=mData.flatMap(w=>[...w.ig,...w.li,...(w.customIg||[]),...(w.customLi||[])]);
   const apr=all.filter(p=>p.status==='aprobado').length;
   const rev=all.filter(p=>p.status==='revision').length;
@@ -802,7 +889,7 @@ function App(){
       React.createElement('div',{className:'hdr-top'},
         React.createElement('div',null,
           React.createElement('div',{className:'hdr-eyebrow'},'Los Martes No Hay Luna'),
-          React.createElement('div',{className:'hdr-title'},'Plan de Contenidos 2026 — Abril a Diciembre')
+          React.createElement('div',{className:'hdr-title'},section==='agencia'?'Recursos de Agencia':'Plan de Contenidos 2026 — Abril a Diciembre')
         ),
         React.createElement('div',{className:'hdr-stats'},
           React.createElement('div',{className:'stat'},React.createElement('div',{className:'stat-n',style:{color:'#4ade80'}},apr),React.createElement('div',{className:'stat-l'},'Aprobados mes')),
@@ -816,11 +903,76 @@ function App(){
         )
       ),
       React.createElement('div',{className:'tabs'},
-        MONTHS.map(m=>React.createElement('button',{key:m.key,className:'tab '+(m.key===month?'on':''),onClick:()=>setMonth(m.key)},m.name))
+        React.createElement('button',{
+          className:'tab '+(section==='agencia'?'on':''),
+          style:{borderBottomColor:section==='agencia'?'#e72078':'transparent',color:section==='agencia'?'#e72078':'rgba(255,255,255,.4)'},
+          onClick:()=>setSection('agencia')
+        },'★ Agencia'),
+        React.createElement('button',{
+          className:'tab '+(section==='plan'?'on':''),
+          onClick:()=>setSection('plan')
+        },'📅 Plan de Contenidos')
+      ),
+      section==='plan'&&React.createElement('div',{className:'month-tabs'},
+        MONTHS.map(m=>React.createElement('button',{
+          key:m.key,
+          className:'month-tab '+(m.key===month?'on':''),
+          onClick:()=>setMonth(m.key)
+        },m.name))
       )
     ),
     React.createElement('div',{className:'prog'},React.createElement('div',{className:'prog-bar',style:{width:pct+'%'}})),
-    React.createElement('div',{className:'body'},
+    section==='agencia'?React.createElement('div',{className:'agencia-view'},
+      React.createElement('div',{className:'ag-hero'},
+        React.createElement('div',{className:'ag-eyebrow'},'Los Martes No Hay Luna'),
+        React.createElement('h2',null,'Recursos de Agencia'),
+        React.createElement('p',null,'Documentos, guías e identidad corporativa de LMNHL. Pega el enlace de Drive en cada recurso para acceder directamente desde aquí.')
+      ),
+      React.createElement('div',{className:'ag-grid'},
+        AG_SECTIONS.map(sec=>React.createElement('div',{key:sec.id,className:'ag-card'},
+          React.createElement('div',{className:'ag-card-hdr'},
+            React.createElement('div',{className:'ag-card-icon',style:{background:sec.bg}},sec.icon),
+            React.createElement('div',null,
+              React.createElement('div',{className:'ag-card-title'},sec.title),
+              React.createElement('div',{className:'ag-card-sub'},sec.items.length+' recursos')
+            )
+          ),
+          React.createElement('div',{className:'ag-items'},
+            sec.items.map(item=>{
+              const link=agLinks[item.key]||'';
+              const hasLink=link.trim().length>0;
+              return React.createElement('div',{key:item.key},
+                React.createElement('div',{className:'ag-item'},
+                  React.createElement('span',{className:'ag-item-dot',style:{background:sec.dot}}),
+                  React.createElement('span',{className:'ag-item-label'},item.label),
+                  React.createElement('span',{className:'ag-item-status '+(hasLink?'done':'empty')},hasLink?'Enlazado':'Sin enlace')
+                ),
+                React.createElement('div',{className:'ag-link-row'},
+                  React.createElement('input',{
+                    className:'ag-link-input',
+                    type:'text',
+                    value:link,
+                    onChange:e=>saveAgLink(item.key,e.target.value),
+                    placeholder:'Pega aquí el enlace de Drive...'
+                  }),
+                  React.createElement('a',{
+                    className:'ag-link-btn '+(hasLink?'':'disabled'),
+                    href:hasLink?link:'#',
+                    target:'_blank',
+                    rel:'noopener noreferrer',
+                    title:hasLink?'Abrir en Drive':'Añade un enlace primero'
+                  },'↗')
+                )
+              );
+            })
+          )
+        ))
+      ),
+      React.createElement('p',{className:'ag-footer-note'},
+        'Los enlaces se guardan automáticamente en tu navegador. ',
+        React.createElement('b',null,'Cuando tengas las URLs de Drive, pégalas y quedarán guardadas para siempre.')
+      )
+    ):React.createElement('div',{className:'body'},
       React.createElement('div',{className:'mth-hd'},
         React.createElement('div',{className:'mth-accent'}),
         React.createElement('div',null,
