@@ -106,7 +106,8 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 .post-textarea{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid rgba(201,168,76,.18);border-radius:6px;font-family:inherit;font-size:12px;color:#1a1205;line-height:1.7;resize:vertical;outline:none;background:#fff;transition:all .2s}
 .post-textarea:focus{border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,.1)}
 .post-textarea::placeholder{color:#bbb;font-size:11px}
-.firma-box{background:#0d0d0d;border-radius:6px;padding:8px 12px;font-size:11px;color:#c9a84c;letter-spacing:.04em;line-height:1.6;user-select:all}
+.firma-box{background:#f5f0e8;border:1.5px dashed rgba(201,168,76,.35);border-radius:6px;padding:8px 12px;font-size:11px;color:#8b6914;letter-spacing:.04em;line-height:1.6;user-select:all}
+.firma-hint{font-size:10px;color:#b09060;letter-spacing:.06em;text-transform:uppercase;margin-top:5px;font-weight:600;display:flex;align-items:center;gap:4px}
 .hashtag-textarea{width:100%;min-height:44px;padding:9px 12px;border:1.5px solid rgba(201,168,76,.18);border-radius:6px;font-family:inherit;font-size:11px;color:#8b6914;line-height:1.6;resize:vertical;outline:none;background:#fff;transition:all .2s}
 .hashtag-textarea:focus{border-color:#c9a84c;box-shadow:0 0 0 3px rgba(201,168,76,.1)}
 .hashtag-textarea::placeholder{color:#ccc;font-size:11px}
@@ -121,7 +122,38 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 .del-btn{font-size:10px;color:#ddd;background:none;border:none;cursor:pointer;font-family:inherit;padding:2px 6px;transition:color .15s;border-radius:4px}
 .del-btn:hover{color:#c0392b;background:#fef2f2}
 
-/* ── UTILITY NAV (Agencia / Cliente / Onboarding) ── */
+/* ── BUDGET BLOCK ── */
+.budget-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(168,85,247,.04);border:1.5px solid rgba(168,85,247,.2);border-radius:8px;padding:10px 12px}
+@media(max-width:500px){.budget-block{grid-template-columns:1fr}}
+.budget-amount-wrap,.budget-tipo-wrap{display:flex;flex-direction:column;gap:4px}
+
+/* ── DESIGN LINK BLOCK ── */
+.design-link-block{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.04));border:1.5px solid rgba(201,168,76,.4);border-left:4px solid #c9a84c;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.design-link-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#8b6914}
+
+/* ── CORRECCIONES ── */
+.corr-section{border-top:1.5px solid rgba(201,168,76,.12);margin-top:6px;padding-top:10px;display:flex;flex-direction:column;gap:8px}
+.corr-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.corr-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8c7a68}
+.corr-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#fef3dc;color:#b45309}
+.corr-badge.done{background:#f0fdf4;color:#16a34a}
+.corr-add-row{display:flex;gap:6px}
+.corr-input{flex:1;padding:7px 10px;border:1.5px solid rgba(201,168,76,.25);border-radius:6px;font-family:inherit;font-size:12px;color:#1a1205;outline:none;background:#fffdf7;transition:all .2s}
+.corr-input:focus{border-color:#c9a84c;box-shadow:0 0 0 2px rgba(201,168,76,.1)}
+.corr-input::placeholder{color:#ccc;font-size:11px}
+.corr-add-btn{padding:7px 12px;border-radius:6px;border:1.5px solid rgba(201,168,76,.35);background:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;color:#8b6914;white-space:nowrap;transition:all .2s}
+.corr-add-btn:hover{background:#f5f0e8;border-color:#c9a84c}
+.corr-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;background:#fffdf7;border:1px solid rgba(201,168,76,.15);border-left:3px solid #f59e0b;transition:all .2s}
+.corr-item.done{background:#f0fdf4;border-color:rgba(34,197,94,.15);border-left-color:#22c55e;opacity:.75}
+.corr-check{width:20px;height:20px;border-radius:5px;border:2px solid #f59e0b;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;background:#fff}
+.corr-item.done .corr-check{background:#22c55e;border-color:#22c55e;color:#fff}
+.corr-text{flex:1;font-size:12px;color:#1a1205;line-height:1.5}
+.corr-item.done .corr-text{color:#6b7280;text-decoration:line-through;text-decoration-color:rgba(107,114,128,.4)}
+.corr-del{font-size:10px;color:#ddd;background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:3px;transition:color .15s;flex-shrink:0}
+.corr-del:hover{color:#c0392b}
+.corr-empty{font-size:11px;color:#ccc;text-align:center;padding:6px 0;font-style:italic}
+
+
 .util-nav{display:flex;gap:8px;padding:10px 16px 8px;background:#0d0d0d;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
 .util-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid rgba(201,168,76,.3);background:none;cursor:pointer;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(201,168,76,.6);transition:all .2s;white-space:nowrap}
 .util-btn:hover{background:rgba(201,168,76,.1);border-color:#c9a84c;color:#c9a84c}
@@ -565,7 +597,7 @@ function buildDefaultRRSS(){
   const s={};
   for(const m of MONTHS){
     s[m.key]=PLAN_RRSS[m.key].map(w=>({
-      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:''})),
+      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[]})),
       customIg:[],
     }));
   }
@@ -576,7 +608,7 @@ function loadRRSS(){
   for(const m of MONTHS){
     const r=lsGet('rrss_'+m.key);
     if(r)d[m.key]=r.map((w,wi)=>({
-      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||DEFAULT_HASHTAGS,link:s.link||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||''})),
+      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||DEFAULT_HASHTAGS,link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[]})),
       customIg:w.customIg||[],
     }));
   }
@@ -643,8 +675,28 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
   const t=TC_RRSS[type]||TC_RRSS.reel;
   const s=SC[data.status]||SC.pendiente;
   const pillar=planCfg?planCfg.pillar:(data.pillar||'');
-  const[confirming,setConfirming]=useState(null); // null | 'revision' | 'aprobado'
+  const[confirming,setConfirming]=useState(null);
   const[nameInput,setNameInput]=useState('');
+  const[newCorr,setNewCorr]=useState('');
+
+  const correcciones=data.correcciones||[];
+  const pendientes=correcciones.filter(function(c){return !c.done;}).length;
+
+  function addCorreccion(){
+    const txt=newCorr.trim();
+    if(!txt)return;
+    const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const list=[...correcciones,{id:Date.now(),texto:txt,done:false,creadaAt:now}];
+    onUpdate('correcciones',list);
+    setNewCorr('');
+  }
+  function toggleCorreccion(id){
+    const list=correcciones.map(function(c){return c.id===id?{...c,done:!c.done}:c;});
+    onUpdate('correcciones',list);
+  }
+  function deleteCorreccion(id){
+    onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));
+  }
 
   function handleStatusClick(){
     if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
@@ -713,7 +765,40 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
     React.createElement('div',null,
       React.createElement('label',{className:'field-label'},'Copy del post'),
       React.createElement('textarea',{className:'post-textarea',value:data.text,onChange:e=>onUpdate('text',e.target.value),placeholder:'Escribe aquí el texto principal del post...'}),
-      React.createElement('div',{className:'firma-box'},FIRMA)
+      React.createElement('div',{className:'firma-box'},FIRMA),
+      React.createElement('div',{className:'firma-hint'},'👆 Añadir al final del copy del post')
+    ),
+    // ENLACE DISEÑO — destacado
+    React.createElement('div',{className:'design-link-block'},
+      React.createElement('div',{className:'design-link-label'},'Enlace al diseño'),
+      React.createElement(UrlInput,{value:data.link,onChange:v=>onUpdate('link',v),placeholder:'https://drive.google.com/...',variant:'rrss'})
+    ),
+    // CORRECCIONES
+    React.createElement('div',{className:'corr-section'},
+      React.createElement('div',{className:'corr-header'},
+        React.createElement('span',{className:'corr-title'},'✏️ Correcciones del cliente'),
+        correcciones.length>0&&React.createElement('span',{
+          className:'corr-badge'+(pendientes===0?' done':'')
+        },pendientes>0?pendientes+' pendiente'+(pendientes>1?'s':''):'✓ Todas aplicadas')
+      ),
+      correcciones.map(function(c){
+        return React.createElement('div',{key:c.id,className:'corr-item'+(c.done?' done':'')},
+          React.createElement('div',{className:'corr-check',onClick:function(){toggleCorreccion(c.id);}},c.done?'✓':''),
+          React.createElement('div',{className:'corr-text'},c.texto),
+          React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}},  '✕')
+        );
+      }),
+      React.createElement('div',{className:'corr-add-row'},
+        React.createElement('input',{
+          className:'corr-input',
+          type:'text',
+          value:newCorr,
+          placeholder:'Añadir corrección del cliente...',
+          onChange:function(e){setNewCorr(e.target.value);},
+          onKeyDown:function(e){if(e.key==='Enter')addCorreccion();}
+        }),
+        React.createElement('button',{className:'corr-add-btn',onClick:addCorreccion},'+ Añadir')
+      )
     ),
     React.createElement('div',null,
       React.createElement('label',{className:'field-label'},'Hashtags'),
@@ -725,8 +810,8 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
         React.createElement('input',{className:'date-input',type:'date',value:data.date||'',onChange:e=>onUpdate('date',e.target.value)})
       ),
       React.createElement('div',null,
-        React.createElement('label',{className:'field-label'},'Enlace a carpeta / vídeo / diseño'),
-        React.createElement(UrlInput,{value:data.link,onChange:v=>onUpdate('link',v),placeholder:'https://drive.google.com/...',variant:'rrss'})
+        React.createElement('label',{className:'field-label'},'📁 Enlace a material del cliente'),
+        React.createElement(UrlInput,{value:data.materialLink||'',onChange:v=>onUpdate('materialLink',v),placeholder:'https://drive.google.com/... (fotos, vídeos, recursos)',variant:'rrss'})
       )
     )
   );
@@ -879,7 +964,9 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
     React.createElement('div',{className:'card-top'},
       React.createElement('div',{className:'card-badges'},
         React.createElement('span',{className:'pub-platform-badge '+platClass},PLATFORM_LABELS[platClass]||'Campaña'),
-        data.budget&&React.createElement('span',{className:'pillar-tag',style:{color:'#6b00cc'}},'💰 '+data.budget)
+        (data.budgetAmount||data.budget)&&React.createElement('span',{className:'pillar-tag',style:{color:'#6b00cc'}},
+          '💰 '+(data.budgetAmount||data.budget)+(data.budgetTipo&&data.budgetTipo!=='total'?' / '+(data.budgetTipo==='mes'?'mes':'día'):'')
+        )
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
         React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
@@ -907,8 +994,31 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
       )
     ),
     React.createElement('div',null,
-      React.createElement('label',{className:'field-label',style:{color:'#3a0066'}},'Objetivo / presupuesto'),
-      React.createElement('textarea',{className:'post-textarea',style:{borderColor:'rgba(168,85,247,.2)',minHeight:60},value:data.objetivo||'',onChange:e=>onUpdate('objetivo',e.target.value),placeholder:'Objetivo de la campaña, KPIs esperados, presupuesto...'})
+      React.createElement('label',{className:'field-label',style:{color:'#3a0066'}},'Objetivo'),
+      React.createElement('textarea',{className:'post-textarea',style:{borderColor:'rgba(168,85,247,.2)',minHeight:60},value:data.objetivo||'',onChange:e=>onUpdate('objetivo',e.target.value),placeholder:'Objetivo de la campaña, KPIs esperados...'})
+    ),
+    React.createElement('div',{className:'budget-block'},
+      React.createElement('div',{className:'budget-amount-wrap'},
+        React.createElement('label',{className:'field-label',style:{color:'#3a0066'}},'Presupuesto por campaña'),
+        React.createElement('input',{
+          className:'topic-input pub',type:'text',
+          value:data.budgetAmount||'',
+          onChange:e=>onUpdate('budgetAmount',e.target.value),
+          placeholder:'Ej: 500 €'
+        })
+      ),
+      React.createElement('div',{className:'budget-tipo-wrap'},
+        React.createElement('label',{className:'field-label',style:{color:'#3a0066'}},'Tipo'),
+        React.createElement('select',{
+          className:'platform-select',
+          value:data.budgetTipo||'total',
+          onChange:e=>onUpdate('budgetTipo',e.target.value)
+        },
+          React.createElement('option',{value:'total'},'Total de la campaña'),
+          React.createElement('option',{value:'mes'},'Total mes'),
+          React.createElement('option',{value:'dia'},'Total día')
+        )
+      )
     ),
     React.createElement('div',{className:'pub-links-row'},
       React.createElement('div',null,
