@@ -95,6 +95,7 @@ body{font-family:Poppins,system-ui,sans-serif;background:#F5F0FF;color:#1A0B2E;m
 .type-badge{display:inline-block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:4px;align-self:flex-start}
 .pillar-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8C7A9C;font-weight:500}
 .st-btn{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:12px;cursor:pointer;border:1.5px solid;white-space:nowrap;flex-shrink:0;font-family:inherit;transition:all .15s}
+.status-select{font-size:10px;letter-spacing:.04em;font-weight:700;padding:4px 22px 4px 8px;border-radius:12px;border:1.5px solid;cursor:pointer;font-family:inherit;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='currentColor'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;white-space:nowrap;flex-shrink:0;transition:all .15s}
 .st-btn:hover{transform:scale(1.05)}
 .field-label{font-size:10px;color:#8C7A9C;margin-bottom:4px;letter-spacing:.06em;text-transform:uppercase;display:block}
 .topic-input{width:100%;padding:9px 11px;border:1.5px solid rgba(124,58,237,.25);border-radius:6px;font-family:inherit;font-size:13px;font-weight:500;color:#1A0B2E;outline:none;background:#F5F0FF;transition:all .2s}
@@ -176,9 +177,11 @@ body{font-family:Poppins,system-ui,sans-serif;background:#F5F0FF;color:#1A0B2E;m
 .corr-add-btn{padding:7px 12px;border-radius:6px;border:1.5px solid rgba(124,58,237,.35);background:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;color:#5B21B6;white-space:nowrap;transition:all .2s}
 .corr-add-btn:hover{background:#F5F0FF;border-color:#7C3AED}
 .corr-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;background:#FAF7FF;border:1px solid rgba(124,58,237,.15);border-left:3px solid #A855F7;transition:all .2s}
-.corr-item.done{background:#f0fdf4;border-color:rgba(34,197,94,.15);border-left-color:#22c55e;opacity:.75}
-.corr-check{width:20px;height:20px;border-radius:5px;border:2px solid #A855F7;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;background:#fff}
-.corr-item.done .corr-check{background:#22c55e;border-color:#22c55e;color:#fff}
+.corr-item.done{background:#f0fdf4;border-color:rgba(34,197,94,.15);border-left-color:#22c55e;opacity:.8}
+.corr-hecho-btn{padding:3px 10px;border-radius:12px;border:1.5px solid #f97316;background:#fff;cursor:pointer;font-size:10px;font-weight:700;color:#f97316;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.corr-hecho-btn:hover{background:#fff7ed}
+.corr-item.done .corr-hecho-btn{border-color:#22c55e;color:#16a34a;background:#f0fdf4}
+.corr-fecha{font-size:10px;color:#9ca3af;font-style:italic;margin-top:2px}
 .corr-text{flex:1;font-size:12px;color:#1A0B2E;line-height:1.5}
 .corr-item.done .corr-text{color:#6b7280;text-decoration:line-through;text-decoration-color:rgba(107,114,128,.4)}
 .corr-del{font-size:10px;color:#ddd;background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:3px;transition:color .15s;flex-shrink:0}
@@ -787,9 +790,10 @@ const TC_RRSS={
 const AGENCIA_NOMBRES=['Juli','Estefanía','Jessy','Paola','Sheila','Carla','Elena','Matías'];
 
 const SC={
-  pendiente:{label:'Pendiente',bg:'#F5F0FF',color:'#4C3A6B',bc:'rgba(124,58,237,.4)',next:'revision'},
-  revision:{label:'En revisión',bg:'#fffbeb',color:'#92400e',bc:'#fcd34d',next:'aprobado'},
-  aprobado:{label:'✓ Aprobado',bg:'#f0fdf4',color:'#166534',bc:'#86efac',next:'pendiente'},
+  pendiente:{label:'⬜ Pendiente',bg:'#F5F0FF',color:'#4C3A6B',bc:'rgba(124,58,237,.4)'},
+  revision:{label:'🔵 En revisión',bg:'#eff6ff',color:'#1e40af',bc:'#93c5fd'},
+  cambios:{label:'🟠 Cambios solicitados',bg:'#fff7ed',color:'#9a3412',bc:'#fdba74'},
+  aprobado:{label:'✅ Aprobado',bg:'#f0fdf4',color:'#166534',bc:'#86efac'},
 };
 const ADD_TYPES_RRSS=[
   {type:'reel',label:'Reel',dot:'#7C3AED'},
@@ -950,7 +954,7 @@ function buildDefaultRRSS(){
   const s={};
   for(const m of MONTHS){
     s[m.key]=PLAN_RRSS[m.key].map(w=>({
-      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:'',link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[],historial:[]})),
+      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:'',link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[],historial:[],revisionNum:0})),
       customIg:[],
     }));
   }
@@ -961,7 +965,7 @@ function loadRRSS(){
   for(const m of MONTHS){
     const r=lsGet('rrss_'+m.key);
     if(r)d[m.key]=r.map((w,wi)=>({
-      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||'',link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[],historial:s.historial||[]})),
+      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||'',link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[],historial:s.historial||[],revisionNum:s.revisionNum||0})),
       customIg:w.customIg||[],
     }));
   }
@@ -1068,8 +1072,8 @@ function HistorialBlock({historial}){
   const reversed=[...historial].reverse();
   const ultimo=reversed[0];
   const anteriores=reversed.slice(1);
-  function evIcon(a){return a==='aprobado'?'✅':a==='devolucion'?'↩️':'📤';}
-  function evLabel(a){return a==='aprobado'?'Aprobado':a==='devolucion'?'Devuelto a revisión':'Enviado a revisión';}
+  function evIcon(a){return a==='aprobado'?'✅':a==='devolucion'?'↩️':a==='cambios'?'🟠':'📤';}
+  function evLabel(a){return a==='aprobado'?'Aprobado':a==='devolucion'?'Devuelto a revisión':a==='cambios'?'Solicitud de cambios':'Enviado a revisión';}
   return React.createElement('div',{className:'historial-section'},
     React.createElement('div',{className:'historial-toggle',onClick:()=>setOpen(o=>!o)},
       React.createElement('div',{className:'historial-title'},
@@ -1122,6 +1126,12 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const list=[...correcciones,{id:Date.now(),texto:txt,done:false,creadaAt:now}];
     onUpdate('correcciones',list);
+    // Auto-set status to cambios when client adds correction (unless already approved)
+    if(data.status!=='aprobado'&&data.status!=='cambios'){
+      onUpdate('status','cambios');
+      const nuevoHistorial=[...(data.historial||[]),{accion:'cambios',nombre:'Cliente (auto)',fecha:now}];
+      onUpdate('historial',nuevoHistorial);
+    }
     setNewCorr('');
   }
   function toggleCorreccion(id){
@@ -1132,39 +1142,41 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
     onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));
   }
 
-  function handleStatusClick(){
-    if(data.status==='pendiente'){setConfirming('revision');setSelectedNombre('');setNumRevision('1ª');}
-    else if(data.status==='revision'){setConfirming('aprobado');setSelectedNombre('');setNameInput('');}
-    else{setConfirming('devolucion');setSelectedNombre('');setNumRevision('1ª');}
+  function handleStatusChange(newStatus){
+    if(newStatus===data.status)return;
+    if(newStatus==='revision'){setConfirming('enviar_revision');setSelectedNombre('');setNumRevision('1ª');}
+    else if(newStatus==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(newStatus==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(newStatus==='pendiente'){setConfirming('reset_pendiente');setSelectedNombre('');}
   }
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    const name=confirming==='aprobado'?(nameInput.trim()||'Cliente'):(selectedNombre||'Sin nombre');
-    const label=confirming==='revision'?('['+numRevision+' revisión] '+name):confirming==='devolucion'?('['+numRevision+' revisión devuelta] '+name):name;
-    const evento={accion:confirming,nombre:label,fecha:now};
-    const nuevoHistorial=[...(data.historial||[]),evento];
-    if(confirming==='revision'){
-      onUpdate('status','revision');
-      onUpdate('revisionBy',label);
-      onUpdate('revisionAt',now);
-      onUpdate('historial',nuevoHistorial);
+    const isAgencia=confirming==='enviar_revision'||confirming==='reset_pendiente';
+    const name=isAgencia?(selectedNombre||'Sin nombre'):(nameInput.trim()||'Cliente');
+    let label=name;
+    let newStatus=data.status;
+    let nuevoHistorial=[...(data.historial||[])];
+    if(confirming==='enviar_revision'){
+      newStatus='revision';label='['+numRevision+' revisión] '+name;
+      nuevoHistorial.push({accion:'revision',nombre:label,fecha:now});
+      onUpdate('revisionBy',label);onUpdate('revisionAt',now);
       sendEmail(seccion||'rrss','revision',label,now,data.topic||'Post sin título');
-    } else if(confirming==='aprobado'){
-      onUpdate('status','aprobado');
-      onUpdate('approvedBy',name);
-      onUpdate('approvedAt',now);
-      onUpdate('historial',nuevoHistorial);
+    } else if(confirming==='aprobar'){
+      newStatus='aprobado';
+      nuevoHistorial.push({accion:'aprobado',nombre:name,fecha:now});
+      onUpdate('approvedBy',name);onUpdate('approvedAt',now);
       onApprove();
       sendEmail(seccion||'rrss','aprobado',name,now,data.topic||'Post sin título');
-    } else if(confirming==='devolucion'){
-      onUpdate('status','revision');
-      onUpdate('revisionBy',label);
-      onUpdate('revisionAt',now);
-      onUpdate('approvedBy','');
-      onUpdate('approvedAt','');
-      onUpdate('historial',nuevoHistorial);
-      sendEmail(seccion||'rrss','devolucion',label,now,data.topic||'Post sin título');
+    } else if(confirming==='pedir_cambios'){
+      newStatus='cambios';
+      nuevoHistorial.push({accion:'cambios',nombre:name,fecha:now});
+      sendEmail(seccion||'rrss','devolucion',name,now,data.topic||'Post sin título');
+    } else if(confirming==='reset_pendiente'){
+      newStatus='pendiente';
+      nuevoHistorial.push({accion:'pendiente',nombre:name,fecha:now});
     }
+    onUpdate('status',newStatus);
+    onUpdate('historial',nuevoHistorial);
     setConfirming(null);setSelectedNombre('');setNameInput('');
   }
   function handleEnviarCliente(){
@@ -1183,30 +1195,29 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
         pillar&&React.createElement('span',{className:'pillar-tag'},pillar)
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
-        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        React.createElement('select',{
+          className:'status-select',
+          style:{background:s.bg,color:s.color,borderColor:s.bc},
+          value:data.status||'pendiente',
+          onChange:e=>handleStatusChange(e.target.value)
+        },
+          React.createElement('option',{value:'pendiente'},'⬜ Pendiente'),
+          React.createElement('option',{value:'revision'},'🔵 En revisión'),
+          React.createElement('option',{value:'cambios'},'🟠 Cambios solicitados'),
+          React.createElement('option',{value:'aprobado'},'✅ Aprobado')
+        ),
         onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDelete(true)},'🗑️')
       )
     ),
     showDelete&&React.createElement(DeleteModal,{titulo:data.topic||'Post sin título',onCancel:()=>setShowDelete(false),onConfirm:function(){onDelete();setShowDelete(false);}}),
-    // REGISTRY
-    (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
-      data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},
-        React.createElement('span',{className:'reg-icon'},'📤'),
-        'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt
-      ),
-      data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},
-        React.createElement('span',{className:'reg-icon'},'✅'),
-        'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt
-      )
-    ),
-    // HISTORIAL
-    (data.historial&&data.historial.length>0)&&React.createElement(HistorialBlock,{historial:data.historial}),
+    // (registry and historial moved below correcciones — see v3.0 spec)
+
     // INLINE CONFIRM
-    confirming&&React.createElement('div',{className:'confirm-row '+confirming},
-      React.createElement('span',{className:'confirm-label '+confirming},
-        confirming==='revision'?'📤 Enviar a revisión':confirming==='devolucion'?'↩️ Devolver a revisión':'✅ Aprobado por el cliente'
+    confirming&&React.createElement('div',{className:'confirm-row '+(confirming==='cambios'||confirming==='aprobar'?'aprobado':confirming==='enviar_revision'?'revision':confirming==='reset_pendiente'?'revision':'revision')},
+      React.createElement('span',{className:'confirm-label revision'},
+        confirming==='enviar_revision'?'📤 Enviar a revisión':confirming==='aprobar'?'✅ El cliente aprueba':confirming==='pedir_cambios'?'🟠 El cliente pide cambios':'↩️ Volver a pendiente'
       ),
-      confirming!=='aprobado'&&React.createElement('div',{className:'confirm-section'},
+      (confirming==='enviar_revision')&&React.createElement('div',{className:'confirm-section'},
         React.createElement('span',{className:'confirm-section-label'},'Número de revisión'),
         React.createElement('div',{className:'revision-num-btns'},
           ['1ª','2ª','3ª'].map(function(n){
@@ -1214,7 +1225,7 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
           })
         )
       ),
-      confirming!=='aprobado'&&React.createElement('div',{className:'confirm-section'},
+      (confirming==='enviar_revision'||confirming==='reset_pendiente')&&React.createElement('div',{className:'confirm-section'},
         React.createElement('span',{className:'confirm-section-label'},'¿Quién lo envía?'),
         React.createElement('div',{className:'nombre-btns'},
           AGENCIA_NOMBRES.map(function(n){
@@ -1222,8 +1233,8 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
           })
         )
       ),
-      confirming==='aprobado'&&React.createElement('div',{className:'confirm-section'},
-        React.createElement('span',{className:'confirm-section-label'},'Nombre del cliente'),
+      (confirming==='aprobar'||confirming==='pedir_cambios')&&React.createElement('div',{className:'confirm-section'},
+        React.createElement('span',{className:'confirm-section-label'},(confirming==='aprobar'?'Nombre del cliente':'Tu nombre')),
         React.createElement('input',{
           className:'confirm-input '+confirming,autoFocus:true,
           value:nameInput,placeholder:'Nombre de quien aprueba...',
@@ -1235,50 +1246,10 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
         React.createElement('button',{
           className:'confirm-btn '+confirming,
           onClick:handleConfirm,
-          disabled:confirming!=='aprobado'&&!selectedNombre,
-          style:{opacity:(confirming!=='aprobado'&&!selectedNombre)?0.5:1}
+          disabled:(confirming==='enviar_revision'||confirming==='reset_pendiente')?!selectedNombre:(confirming==='aprobar'||confirming==='pedir_cambios')?!nameInput.trim():false,
+          style:{opacity:((confirming==='enviar_revision'||confirming==='reset_pendiente')&&!selectedNombre)||(((confirming==='aprobar'||confirming==='pedir_cambios'))&&!nameInput.trim())?0.5:1}
         },'Confirmar'),
         React.createElement('button',{className:'confirm-cancel',onClick:()=>{setConfirming(null);setSelectedNombre('');setNameInput('');}  },'✕')
-      )
-    ),
-    // ENVIAR AL CLIENTE (solo cuando está en revisión)
-    data.status==='revision'&&React.createElement('div',{className:'enviar-cliente-accordion'},
-      React.createElement('div',{className:'enviar-cliente-toggle',onClick:()=>setEnviarOpen(o=>!o)},
-        React.createElement('span',null,enviarOpen?'▾':'▸'),
-        ' 📨 Enviar al cliente para revisar'
-      ),
-      enviarOpen&&React.createElement('div',{className:'enviar-cliente-body'},
-        React.createElement('div',{className:'enviar-cliente-field'},
-          React.createElement('label',null,'Para'),
-          React.createElement('input',{
-            className:'enviar-cliente-input',type:'email',
-            placeholder:'email@cliente.com',
-            value:emailPara,
-            onChange:e=>setEmailPara(e.target.value)
-          }),
-          getFrecuentes().length>0&&React.createElement('div',{className:'frecuentes'},
-            getFrecuentes().map(function(e){
-              return React.createElement('span',{key:e,className:'frecuente-tag',onClick:function(){setEmailPara(e);}},e);
-            })
-          )
-        ),
-        React.createElement('div',{className:'enviar-cliente-field'},
-          React.createElement('label',null,'CC (separar con comas)'),
-          React.createElement('input',{
-            className:'enviar-cliente-input',type:'text',
-            placeholder:'cc1@email.com, cc2@email.com',
-            value:emailCC,
-            onChange:e=>setEmailCC(e.target.value)
-          })
-        ),
-        React.createElement('div',{className:'enviar-cliente-actions'},
-          React.createElement('button',{className:'enviar-cliente-cancel',onClick:()=>setEnviarOpen(false)},'Descartar'),
-          React.createElement('button',{
-            className:'enviar-cliente-btn',
-            onClick:handleEnviarCliente,
-            disabled:!emailPara
-          },'📨 Enviar')
-        )
       )
     ),
     React.createElement('div',null,
@@ -1306,9 +1277,12 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
       ),
       correcciones.map(function(c){
         return React.createElement('div',{key:c.id,className:'corr-item'+(c.done?' done':'')},
-          React.createElement('div',{className:'corr-check',onClick:function(){toggleCorreccion(c.id);}},c.done?'✓':''),
-          React.createElement('div',{className:'corr-text'},c.texto),
-          React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}},  '✕')
+          React.createElement('div',{style:{flex:1,minWidth:0}},
+            React.createElement('div',{className:'corr-text'},c.texto),
+            c.creadaAt&&React.createElement('div',{className:'corr-fecha'},c.creadaAt)
+          ),
+          React.createElement('button',{className:'corr-hecho-btn',onClick:function(){toggleCorreccion(c.id);}},c.done?'✓ Hecho':'Hecho'),
+          React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}},'✕')
         );
       }),
       React.createElement('div',{className:'corr-add-row'},
@@ -1321,6 +1295,41 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
           onKeyDown:function(e){if(e.key==='Enter')addCorreccion();}
         }),
         React.createElement('button',{className:'corr-add-btn',onClick:addCorreccion},'+ Añadir')
+      )
+    ),
+    // HISTORIAL — debajo de correcciones
+    (data.historial&&data.historial.length>0)&&React.createElement(HistorialBlock,{historial:data.historial}),
+    // REGISTRY — debajo de correcciones
+    (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
+      data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},
+        React.createElement('span',{className:'reg-icon'},'📤'),
+        'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt
+      ),
+      data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},
+        React.createElement('span',{className:'reg-icon'},'✅'),
+        'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt
+      )
+    ),
+    // ENVIAR AL CLIENTE — debajo de correcciones
+    data.status==='revision'&&React.createElement('div',{className:'enviar-cliente-accordion'},
+      React.createElement('div',{className:'enviar-cliente-toggle',onClick:()=>setEnviarOpen(o=>!o)},
+        React.createElement('span',null,enviarOpen?'▾':'▸'),
+        ' 📨 Enviar al cliente para revisar'
+      ),
+      enviarOpen&&React.createElement('div',{className:'enviar-cliente-body'},
+        React.createElement('div',{className:'enviar-cliente-field'},
+          React.createElement('label',null,'Para'),
+          React.createElement('input',{className:'enviar-cliente-input',type:'email',placeholder:'email@cliente.com',value:emailPara,onChange:e=>setEmailPara(e.target.value)}),
+          getFrecuentes().length>0&&React.createElement('div',{className:'frecuentes'},getFrecuentes().map(function(e){return React.createElement('span',{key:e,className:'frecuente-tag',onClick:function(){setEmailPara(e);}},e);}))
+        ),
+        React.createElement('div',{className:'enviar-cliente-field'},
+          React.createElement('label',null,'CC (separar con comas)'),
+          React.createElement('input',{className:'enviar-cliente-input',type:'text',placeholder:'cc1@email.com, cc2@email.com',value:emailCC,onChange:e=>setEmailCC(e.target.value)})
+        ),
+        React.createElement('div',{className:'enviar-cliente-actions'},
+          React.createElement('button',{className:'enviar-cliente-cancel',onClick:()=>setEnviarOpen(false)},'Descartar'),
+          React.createElement('button',{className:'enviar-cliente-btn',onClick:handleEnviarCliente,disabled:!emailPara},'📨 Enviar')
+        )
       )
     ),
     React.createElement('div',{className:'fields-stack'},
@@ -1361,7 +1370,7 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onU
         React.createElement('span',{className:'plat-count'},total+' publicaciones')
       ),
       React.createElement('div',{className:'posts-grid'},
-        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,seccion:'rrss',data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onDelete:()=>onDeleteBase(i),onApprove:()=>onApprove('ig',i)})),
+        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,seccion:'rrss',data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onApprove:()=>onApprove('ig',i)})),
         (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,seccion:'rrss',data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove:()=>onApprove('custom',i)}))
       ),
       React.createElement(AddButton,{onAdd:type=>onAddCustom('ig',type)})
