@@ -184,6 +184,14 @@ body{font-family:Poppins,system-ui,sans-serif;background:#F5F0FF;color:#1A0B2E;m
 .corr-del{font-size:10px;color:#ddd;background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:3px;transition:color .15s;flex-shrink:0}
 .corr-del:hover{color:#c0392b}
 .corr-empty{font-size:11px;color:#ccc;text-align:center;padding:6px 0;font-style:italic}
+.historial-section{border-top:1px solid rgba(124,58,237,.1);margin-top:8px;padding-top:8px}
+.historial-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C7A9C;margin-bottom:6px}
+.historial-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid rgba(124,58,237,.06)}
+.historial-item:last-child{border-bottom:none}
+.historial-icon{font-size:12px;flex-shrink:0;margin-top:1px}
+.historial-info{flex:1;min-width:0}
+.historial-nombre{font-size:11px;font-weight:700;color:#1A0B2E}
+.historial-meta{font-size:10px;color:#8C7A9C;margin-top:1px}
 
 
 .util-nav{display:flex;gap:8px;padding:10px 16px 8px;background:#3D1785;border-top:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
@@ -794,7 +802,7 @@ function buildDefaultRRSS(){
   const s={};
   for(const m of MONTHS){
     s[m.key]=PLAN_RRSS[m.key].map(w=>({
-      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:'',link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[]})),
+      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:'',link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[],historial:[]})),
       customIg:[],
     }));
   }
@@ -805,7 +813,7 @@ function loadRRSS(){
   for(const m of MONTHS){
     const r=lsGet('rrss_'+m.key);
     if(r)d[m.key]=r.map((w,wi)=>({
-      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||'',link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[]})),
+      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||'',link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[],historial:s.historial||[]})),
       customIg:w.customIg||[],
     }));
   }
@@ -903,14 +911,18 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
+    const evento={accion:confirming,nombre:name,fecha:now};
+    const nuevoHistorial=[...(data.historial||[]),evento];
     if(confirming==='revision'){
       onUpdate('status','revision');
       onUpdate('revisionBy',name);
       onUpdate('revisionAt',now);
+      onUpdate('historial',nuevoHistorial);
     } else if(confirming==='aprobado'){
       onUpdate('status','aprobado');
       onUpdate('approvedBy',name);
       onUpdate('approvedAt',now);
+      onUpdate('historial',nuevoHistorial);
       onApprove();
     } else if(confirming==='devolucion'){
       onUpdate('status','revision');
@@ -918,6 +930,7 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       onUpdate('revisionAt',now);
       onUpdate('approvedBy','');
       onUpdate('approvedAt','');
+      onUpdate('historial',nuevoHistorial);
     }
     setConfirming(null);setNameInput('');
   }
@@ -944,6 +957,21 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
         React.createElement('span',{className:'reg-icon'},'✅'),
         'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt
       )
+    ),
+    // HISTORIAL
+    (data.historial&&data.historial.length>0)&&React.createElement('div',{className:'historial-section'},
+      React.createElement('div',{className:'historial-title'},'📋 Historial de cambios'),
+      [...data.historial].reverse().map(function(ev,i){
+        var icon=ev.accion==='aprobado'?'✅':ev.accion==='devolucion'?'🔄':'📤';
+        var label=ev.accion==='aprobado'?'Aprobado':ev.accion==='devolucion'?'Devuelto a revisión':'Enviado a revisión';
+        return React.createElement('div',{key:i,className:'historial-item'},
+          React.createElement('span',{className:'historial-icon'},icon),
+          React.createElement('div',{className:'historial-info'},
+            React.createElement('div',{className:'historial-nombre'},ev.nombre),
+            React.createElement('div',{className:'historial-meta'},label+' · '+ev.fecha)
+          )
+        );
+      })
     ),
     // INLINE CONFIRM
     confirming&&React.createElement('div',{className:'confirm-row '+confirming},
