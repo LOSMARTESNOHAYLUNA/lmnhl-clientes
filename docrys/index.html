@@ -41,8 +41,8 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 /* ── MONTH TABS ── */
 .tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;background:#0d0d0d;padding:0 0 0}
 .tabs::-webkit-scrollbar{display:none}
-.tab{padding:8px 13px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
-.tab.on{color:#c9a84c;border-bottom-color:#c9a84c}
+.tab{padding:8px 13px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab.on{color:#fff;font-weight:800;background:rgba(255,255,255,.18);border-radius:6px 6px 0 0;border-bottom-color:transparent}
 .tab.on.seo-tab{color:#2c8e8a;border-bottom-color:#2c8e8a}
 .tab.on.pub-tab{color:#a855f7;border-bottom-color:#a855f7}
 
@@ -158,6 +158,16 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 .budget-block{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(168,85,247,.04);border:1.5px solid rgba(168,85,247,.2);border-radius:8px;padding:10px 12px}
 @media(max-width:500px){.budget-block{grid-template-columns:1fr}}
 .budget-amount-wrap,.budget-tipo-wrap{display:flex;flex-direction:column;gap:4px}
+
+/* ── HISTORIAL ── */
+.historial-block{background:#fafafa;border:1px solid rgba(0,0,0,.06);border-radius:6px;overflow:hidden;margin-bottom:2px}
+.historial-toggle{width:100%;display:flex;align-items:center;gap:6px;padding:7px 10px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;color:#666;text-align:left}
+.historial-toggle:hover{background:rgba(0,0,0,.03)}
+.historial-count{margin-left:auto;font-size:10px;font-weight:800;background:#e5e7eb;color:#374151;padding:1px 6px;border-radius:8px}
+.historial-list{display:flex;flex-direction:column;gap:4px;padding:0 10px 8px}
+.historial-item{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:#555;padding:4px 0;border-top:1px solid rgba(0,0,0,.05)}
+.historial-icon{flex-shrink:0;font-size:13px}
+.historial-text{line-height:1.5}
 
 /* ── DESIGN LINK BLOCK ── */
 .design-link-block{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.04));border:1.5px solid rgba(201,168,76,.4);border-left:4px solid #c9a84c;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
@@ -544,6 +554,57 @@ const LS_PFX='docrys26v3_';
 function lsGet(k){try{return JSON.parse(localStorage.getItem(LS_PFX+k)||'null');}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(LS_PFX+k,JSON.stringify(v));}catch(e){}}
 
+// ── SUPABASE ────────────────────────────────────────────────────────────
+const SB_URL='https://kbfipabrgwmqethkczvi.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtiZmlwYWJyZ3dtcWV0aGtjenZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MTIzMDUsImV4cCI6MjA4OTM4ODMwNX0.wguzar4qoB5RnE1xWc91ckkPe4xp5qi2xdsZ6M0sUi8';
+const CLIENT_ID='docrys';
+
+async function sbLoad(){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/portal_data?client_id=eq.${CLIENT_ID}&select=key,data`,{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    if(!r.ok)return null;
+    const rows=await r.json();
+    const out={};
+    rows.forEach(function(row){out[row.key]=row.data;});
+    return out;
+  }catch(e){return null;}
+}
+
+async function sbSave(snapshot){
+  try{
+    const rows=Object.entries(snapshot).map(function([k,v]){
+      return {client_id:CLIENT_ID,key:k,data:v,updated_at:new Date().toISOString()};
+    });
+    await fetch(`${SB_URL}/rest/v1/portal_data`,{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify(rows)
+    });
+  }catch(e){}
+}
+
+// ── EMAIL ────────────────────────────────────────────────────────────────
+const EMAIL_FN='https://kbfipabrgwmqethkczvi.supabase.co/functions/v1/dynamic-api';
+const EMAIL_TO={
+  rrss:   {to:'rrss@losmartesnohayluna.com',   cc:'comercial@losmartesnohayluna.com'},
+  seo:    {to:'proyectos@losmartesnohayluna.com',cc:'comercial@losmartesnohayluna.com'},
+  pub:    {to:'rrss@losmartesnohayluna.com',   cc:'comercial@losmartesnohayluna.com'},
+  medios: {to:'sheila@losmartesnohayluna.com', cc:'comercial@losmartesnohayluna.com'},
+  onboarding:{to:'comercial@losmartesnohayluna.com',cc:'sheila@losmartesnohayluna.com'},
+};
+async function sendEmail(seccion,accion,nombre,fecha,titulo){
+  try{
+    const dest=EMAIL_TO[seccion]||EMAIL_TO.rrss;
+    await fetch(EMAIL_FN,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({seccion,accion,nombre,fecha,titulo,to:dest.to,cc:dest.cc,cliente:'Docrys & DC'})
+    });
+  }catch(e){}
+}
+
 // ── RRSS DATA ──────────────────────────────────────────────────────────
 const TC_RRSS={
   reel:{label:'Reel',color:'#6b4a00',bg:'#fef3dc',border:'#c9a84c'},
@@ -796,48 +857,49 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
   const[confirming,setConfirming]=useState(null);
   const[nameInput,setNameInput]=useState('');
   const[newCorr,setNewCorr]=useState('');
+  const[histOpen,setHistOpen]=useState(false);
 
   const correcciones=data.correcciones||[];
+  const historial=data.historial||[];
   const pendientes=correcciones.filter(function(c){return !c.done;}).length;
 
   function addCorreccion(){
-    const txt=newCorr.trim();
-    if(!txt)return;
+    const txt=newCorr.trim(); if(!txt)return;
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    const list=[...correcciones,{id:Date.now(),texto:txt,done:false,creadaAt:now}];
-    onUpdate('correcciones',list);
+    onUpdate('correcciones',[...correcciones,{id:Date.now(),texto:txt,done:false,creadaAt:now}]);
     setNewCorr('');
   }
-  function toggleCorreccion(id){
-    const list=correcciones.map(function(c){return c.id===id?{...c,done:!c.done}:c;});
-    onUpdate('correcciones',list);
-  }
-  function deleteCorreccion(id){
-    onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));
-  }
+  function toggleCorreccion(id){onUpdate('correcciones',correcciones.map(function(c){return c.id===id?{...c,done:!c.done}:c;}));}
+  function deleteCorreccion(id){onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));}
 
   function handleStatusClick(){
     if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
     else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else{onUpdate('status','pendiente');setConfirming(null);}
+    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
+    else{setConfirming('revision');setNameInput('');}
   }
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
+    const hist=[...historial,{accion:confirming,nombre:name,fecha:now}];
+    onUpdate('historial',hist);
     if(confirming==='revision'){
-      onUpdate('status','revision');
-      onUpdate('revisionBy',name);
-      onUpdate('revisionAt',now);
+      onUpdate('status','revision'); onUpdate('revisionBy',name); onUpdate('revisionAt',now);
+      sendEmail('rrss','En revisión',name,now,data.topic||'Post RRSS');
     } else if(confirming==='aprobado'){
-      onUpdate('status','aprobado');
-      onUpdate('approvedBy',name);
-      onUpdate('approvedAt',now);
+      onUpdate('status','aprobado'); onUpdate('approvedBy',name); onUpdate('approvedAt',now);
       onApprove();
+      sendEmail('rrss','Aprobado',name,now,data.topic||'Post RRSS');
+    } else if(confirming==='devuelto'){
+      onUpdate('status','revision'); onUpdate('revisionBy',name); onUpdate('revisionAt',now);
+      sendEmail('rrss','Devuelto a revisión',name,now,data.topic||'Post RRSS');
     }
-    setConfirming(null);setNameInput('');
+    setConfirming(null); setNameInput('');
   }
 
   const isApproved=data.status==='aprobado';
+  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba este post?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+
   return React.createElement('div',{className:'card'+(isApproved?' approved':''),style:{borderLeftColor:isApproved?'#22c55e':t.border}},
     React.createElement('div',{className:'card-top'},
       React.createElement('div',{className:'card-badges'},
@@ -847,6 +909,24 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
         React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
         onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+      )
+    ),
+    // HISTORIAL
+    historial.length>0&&React.createElement('div',{className:'historial-block'},
+      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
+        histOpen?'▾':'▸',' 📋 Historial de cambios',
+        React.createElement('span',{className:'historial-count'},historial.length)
+      ),
+      histOpen&&React.createElement('div',{className:'historial-list'},
+        historial.map(function(h,i){
+          const icons={revision:'📤',aprobado:'✅',devuelto:'↩️'};
+          return React.createElement('div',{key:i,className:'historial-item'},
+            React.createElement('span',{className:'historial-icon'},icons[h.accion]||'•'),
+            React.createElement('span',{className:'historial-text'},
+              React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha
+            )
+          );
+        })
       )
     ),
     // REGISTRY
@@ -862,18 +942,14 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
     ),
     // INLINE CONFIRM
     confirming&&React.createElement('div',{className:'confirm-row '+confirming},
-      React.createElement('span',{className:'confirm-label '+confirming},
-        confirming==='revision'?'📤 ¿Quién lo envía a revisión?':'✅ ¿Quién aprueba este post?'
-      ),
+      React.createElement('span',{className:'confirm-label '+(confirming==='devuelto'?'revision':confirming)},confirmLabels[confirming]),
       React.createElement('input',{
-        className:'confirm-input '+confirming,
-        type:'text',autoFocus:true,
-        value:nameInput,
-        placeholder:'Nombre...',
+        className:'confirm-input '+(confirming==='devuelto'?'revision':confirming),
+        type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',
         onChange:e=>setNameInput(e.target.value),
         onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}
       }),
-      React.createElement('button',{className:'confirm-btn '+confirming,onClick:handleConfirm},'Confirmar'),
+      React.createElement('button',{className:'confirm-btn '+(confirming==='devuelto'?'revision':confirming),onClick:handleConfirm},'Confirmar'),
       React.createElement('button',{className:'confirm-cancel',onClick:()=>{setConfirming(null);setNameInput('');}  },'✕')
     ),
     React.createElement('div',null,
@@ -886,35 +962,28 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       React.createElement('div',{className:'firma-box'},FIRMA),
       React.createElement('div',{className:'firma-hint'},'👆 Añadir al final del copy del post')
     ),
-    // ENLACE DISEÑO — destacado
     React.createElement('div',{className:'design-link-block'},
       React.createElement('div',{className:'design-link-label'},'Enlace al diseño'),
       React.createElement(UrlInput,{value:data.link,onChange:v=>onUpdate('link',v),placeholder:'https://drive.google.com/...',variant:'rrss'})
     ),
-    // CORRECCIONES
     React.createElement('div',{className:'corr-section'},
       React.createElement('div',{className:'corr-header'},
         React.createElement('span',{className:'corr-title'},'✏️ Correcciones del cliente'),
-        correcciones.length>0&&React.createElement('span',{
-          className:'corr-badge'+(pendientes===0?' done':'')
-        },pendientes>0?pendientes+' pendiente'+(pendientes>1?'s':''):'✓ Todas aplicadas')
+        correcciones.length>0&&React.createElement('span',{className:'corr-badge'+(pendientes===0?' done':'')},
+          pendientes>0?pendientes+' pendiente'+(pendientes>1?'s':''):'✓ Todas aplicadas')
       ),
       correcciones.map(function(c){
         return React.createElement('div',{key:c.id,className:'corr-item'+(c.done?' done':'')},
           React.createElement('div',{className:'corr-check',onClick:function(){toggleCorreccion(c.id);}},c.done?'✓':''),
           React.createElement('div',{className:'corr-text'},c.texto),
-          React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}},  '✕')
+          React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}  },'✕')
         );
       }),
       React.createElement('div',{className:'corr-add-row'},
-        React.createElement('input',{
-          className:'corr-input',
-          type:'text',
-          value:newCorr,
+        React.createElement('input',{className:'corr-input',type:'text',value:newCorr,
           placeholder:'Añadir corrección del cliente...',
           onChange:function(e){setNewCorr(e.target.value);},
-          onKeyDown:function(e){if(e.key==='Enter')addCorreccion();}
-        }),
+          onKeyDown:function(e){if(e.key==='Enter')addCorreccion();}}),
         React.createElement('button',{className:'corr-add-btn',onClick:addCorreccion},'+ Añadir')
       )
     ),
@@ -973,18 +1042,26 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
   const s=SC[data.status]||SC.pendiente;
   const[confirming,setConfirming]=useState(null);
   const[nameInput,setNameInput]=useState('');
+  const[histOpen,setHistOpen]=useState(false);
+  const historial=data.historial||[];
+
   function handleStatusClick(){
     if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
     else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else{onUpdate('status','pendiente');setConfirming(null);}
+    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
+    else{setConfirming('revision');setNameInput('');}
   }
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();}
+    const hist=[...historial,{accion:confirming,nombre:name,fecha:now}];
+    onUpdate('historial',hist);
+    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('seo','En revisión',name,now,data.title||'Artículo SEO');}
+    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('seo','Aprobado',name,now,data.title||'Artículo SEO');}
+    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('seo','Devuelto a revisión',name,now,data.title||'Artículo SEO');}
     setConfirming(null);setNameInput('');
   }
+  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
   return React.createElement('div',{className:'seo-card'+(data.status==='aprobado'?' approved':'')},
     React.createElement('div',{className:'card-top'},
       React.createElement('div',{className:'card-badges'},
@@ -996,14 +1073,27 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
         onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
       )
     ),
+    historial.length>0&&React.createElement('div',{className:'historial-block'},
+      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
+        histOpen?'▾':'▸',' 📋 Historial de cambios',React.createElement('span',{className:'historial-count'},historial.length)
+      ),
+      histOpen&&React.createElement('div',{className:'historial-list'},
+        historial.map(function(h,i){
+          return React.createElement('div',{key:i,className:'historial-item'},
+            React.createElement('span',{className:'historial-icon'},{revision:'📤',aprobado:'✅',devuelto:'↩️'}[h.accion]||'•'),
+            React.createElement('span',{className:'historial-text'},React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha)
+          );
+        })
+      )
+    ),
     (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
       data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},React.createElement('span',{className:'reg-icon'},'📤'),'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt),
       data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},React.createElement('span',{className:'reg-icon'},'✅'),'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt)
     ),
-    confirming&&React.createElement('div',{className:'confirm-row '+confirming},
-      React.createElement('span',{className:'confirm-label '+confirming},confirming==='revision'?'📤 ¿Quién lo envía a revisión?':'✅ ¿Quién aprueba?'),
-      React.createElement('input',{className:'confirm-input '+confirming,type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',onChange:e=>setNameInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}}),
-      React.createElement('button',{className:'confirm-btn '+confirming,onClick:handleConfirm},'Confirmar'),
+    confirming&&React.createElement('div',{className:'confirm-row '+(confirming==='devuelto'?'revision':confirming)},
+      React.createElement('span',{className:'confirm-label '+(confirming==='devuelto'?'revision':confirming)},confirmLabels[confirming]),
+      React.createElement('input',{className:'confirm-input '+(confirming==='devuelto'?'revision':confirming),type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',onChange:e=>setNameInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}}),
+      React.createElement('button',{className:'confirm-btn '+(confirming==='devuelto'?'revision':confirming),onClick:handleConfirm},'Confirmar'),
       React.createElement('button',{className:'confirm-cancel',onClick:()=>{setConfirming(null);setNameInput('');}  },'✕')
     ),
     React.createElement('div',null,
@@ -1031,7 +1121,7 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
   );
 }
 
-function SEOMonth({mk,monthData,onUpdateArticle,onUpdateReport,onAddArticle,onDeleteArticle,onApprove,monthName}){
+function SEOMonth({mk,monthData,onUpdateArticle,onUpdateReport,onUpdateSeoTecnico,onAddArticle,onDeleteArticle,onApprove,monthName}){
   const[open,setOpen]=useState(true);
   const apr=monthData.articles.filter(a=>a.status==='aprobado').length;
   return React.createElement('div',{className:'seo-month-block'},
@@ -1044,7 +1134,7 @@ function SEOMonth({mk,monthData,onUpdateArticle,onUpdateReport,onAddArticle,onDe
         React.createElement('span',{style:{fontSize:10,color:'rgba(77,209,205,.5)',letterSpacing:'.06em'}},apr+'/'+monthData.articles.length+' aprobados')
       ),
       React.createElement('div',{className:'seo-report-row'},
-        React.createElement('span',{className:'seo-report-label'},'📊 Informe:'),
+        React.createElement('span',{className:'seo-report-label'},'📈 Reporte mensual:'),
         React.createElement(UrlInput,{value:monthData.reportLink||'',onChange:v=>onUpdateReport(v),placeholder:'https://docs.google.com/...',className:'seo-report-input',variant:'seo'})
       )
     ),
@@ -1053,6 +1143,11 @@ function SEOMonth({mk,monthData,onUpdateArticle,onUpdateReport,onAddArticle,onDe
       React.createElement('button',{className:'add-post-btn seo',onClick:onAddArticle,style:{marginTop:4}},
         React.createElement('span',{className:'add-icon seo'},'+'),
         'Añadir artículo SEO'
+      ),
+      // CAMBIOS SEO TÉCNICO — al final del mes
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8,marginTop:8,padding:'10px 12px',background:'rgba(44,142,138,.08)',border:'1px solid rgba(44,142,138,.2)',borderRadius:8}},
+        React.createElement('span',{style:{fontSize:12,fontWeight:700,color:'#2c8e8a',whiteSpace:'nowrap'}},'🔧 Cambios SEO técnico:'),
+        React.createElement(UrlInput,{value:monthData.cambiosSeoTecnico||'',onChange:v=>onUpdateSeoTecnico(v),placeholder:'https://docs.google.com/...',className:'seo-report-input',variant:'seo'})
       )
     )
   );
@@ -1065,18 +1160,26 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
   const s=SC[data.status]||SC.pendiente;
   const[confirming,setConfirming]=useState(null);
   const[nameInput,setNameInput]=useState('');
+  const[histOpen,setHistOpen]=useState(false);
+  const historial=data.historial||[];
+
   function handleStatusClick(){
     if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
     else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else{onUpdate('status','pendiente');setConfirming(null);}
+    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
+    else{setConfirming('revision');setNameInput('');}
   }
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();}
+    const hist=[...historial,{accion:confirming,nombre:name,fecha:now}];
+    onUpdate('historial',hist);
+    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('pub','En revisión',name,now,data.name||'Campaña');}
+    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('pub','Aprobado',name,now,data.name||'Campaña');}
+    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('pub','Devuelto a revisión',name,now,data.name||'Campaña');}
     setConfirming(null);setNameInput('');
   }
+  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
   const platClass=data.platform||'otras';
   return React.createElement('div',{className:'pub-card'+(data.status==='aprobado'?' approved':'')},
     React.createElement('div',{className:'card-top'},
@@ -1091,14 +1194,27 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
         onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
       )
     ),
+    historial.length>0&&React.createElement('div',{className:'historial-block'},
+      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
+        histOpen?'▾':'▸',' 📋 Historial de cambios',React.createElement('span',{className:'historial-count'},historial.length)
+      ),
+      histOpen&&React.createElement('div',{className:'historial-list'},
+        historial.map(function(h,i){
+          return React.createElement('div',{key:i,className:'historial-item'},
+            React.createElement('span',{className:'historial-icon'},{revision:'📤',aprobado:'✅',devuelto:'↩️'}[h.accion]||'•'),
+            React.createElement('span',{className:'historial-text'},React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha)
+          );
+        })
+      )
+    ),
     (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
       data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},React.createElement('span',{className:'reg-icon'},'📤'),'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt),
       data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},React.createElement('span',{className:'reg-icon'},'✅'),'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt)
     ),
-    confirming&&React.createElement('div',{className:'confirm-row '+confirming},
-      React.createElement('span',{className:'confirm-label '+confirming},confirming==='revision'?'📤 ¿Quién lo envía a revisión?':'✅ ¿Quién aprueba?'),
-      React.createElement('input',{className:'confirm-input '+confirming,type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',onChange:e=>setNameInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}}),
-      React.createElement('button',{className:'confirm-btn '+confirming,onClick:handleConfirm},'Confirmar'),
+    confirming&&React.createElement('div',{className:'confirm-row '+(confirming==='devuelto'?'revision':confirming)},
+      React.createElement('span',{className:'confirm-label '+(confirming==='devuelto'?'revision':confirming)},confirmLabels[confirming]),
+      React.createElement('input',{className:'confirm-input '+(confirming==='devuelto'?'revision':confirming),type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',onChange:e=>setNameInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}}),
+      React.createElement('button',{className:'confirm-btn '+(confirming==='devuelto'?'revision':confirming),onClick:handleConfirm},'Confirmar'),
       React.createElement('button',{className:'confirm-cancel',onClick:()=>{setConfirming(null);setNameInput('');}  },'✕')
     ),
     React.createElement('div',null,
@@ -1232,9 +1348,33 @@ function AgencySection({data,onUpdate}){
 }
 
 // ── MEDIOS DIGITALES COMPONENTS ────────────────────────────────────────
-function MediosArticleCard({data,idx,onUpdate,onDelete}){
+function MediosArticleCard({data,idx,onUpdate,onDelete,onApprove}){
   const[open,setOpen]=useState(true);
+  const[confirming,setConfirming]=useState(null);
+  const[nameInput,setNameInput]=useState('');
+  const[histOpen,setHistOpen]=useState(false);
+  const s=SC[data.status]||SC.pendiente;
+  const historial=data.historial||[];
+
   function setFoto(i){onUpdate('fotoSeleccionada',i);}
+  function handleStatusClick(){
+    if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
+    else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
+    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
+    else{setConfirming('revision');setNameInput('');}
+  }
+  function handleConfirm(){
+    const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const name=nameInput.trim()||'Sin nombre';
+    const hist=[...historial,{accion:confirming,nombre:name,fecha:now}];
+    onUpdate('historial',hist);
+    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('medios','En revisión',name,now,data.titular||'Artículo Medios');}
+    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);if(onApprove)onApprove();sendEmail('medios','Aprobado',name,now,data.titular||'Artículo Medios');}
+    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('medios','Devuelto a revisión',name,now,data.titular||'Artículo Medios');}
+    setConfirming(null);setNameInput('');
+  }
+  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+
   return React.createElement('div',{className:'medios-card'},
     React.createElement('div',{className:'medios-card-hdr'},
       React.createElement('button',{
@@ -1244,7 +1384,29 @@ function MediosArticleCard({data,idx,onUpdate,onDelete}){
         React.createElement('span',{className:'medios-badge'},'Artículo '+(idx+1)),
         React.createElement('span',{style:{fontSize:11,color:'#a5b4fc',letterSpacing:'.06em'}},(data.titular||'Sin titular')+(open?'  ▲':'  ▼'))
       ),
-      onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+      React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
+        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+      )
+    ),
+    historial.length>0&&React.createElement('div',{className:'historial-block'},
+      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
+        histOpen?'▾':'▸',' 📋 Historial de cambios',React.createElement('span',{className:'historial-count'},historial.length)
+      ),
+      histOpen&&React.createElement('div',{className:'historial-list'},
+        historial.map(function(h,i){
+          return React.createElement('div',{key:i,className:'historial-item'},
+            React.createElement('span',{className:'historial-icon'},{revision:'📤',aprobado:'✅',devuelto:'↩️'}[h.accion]||'•'),
+            React.createElement('span',{className:'historial-text'},React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha)
+          );
+        })
+      )
+    ),
+    confirming&&React.createElement('div',{className:'confirm-row '+(confirming==='devuelto'?'revision':confirming)},
+      React.createElement('span',{className:'confirm-label '+(confirming==='devuelto'?'revision':confirming)},confirmLabels[confirming]),
+      React.createElement('input',{className:'confirm-input '+(confirming==='devuelto'?'revision':confirming),type:'text',autoFocus:true,value:nameInput,placeholder:'Nombre...',onChange:e=>setNameInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter')handleConfirm();if(e.key==='Escape'){setConfirming(null);setNameInput('');}}}),
+      React.createElement('button',{className:'confirm-btn '+(confirming==='devuelto'?'revision':confirming),onClick:handleConfirm},'Confirmar'),
+      React.createElement('button',{className:'confirm-cancel',onClick:()=>{setConfirming(null);setNameInput('');}  },'✕')
     ),
     open&&React.createElement('div',null,
       // TITULARES
@@ -1327,7 +1489,8 @@ function MediosSection({data,onUpdateArticle,onAddArticle,onDeleteArticle}){
         return React.createElement(MediosArticleCard,{
           key:art.id||i, idx:i, data:art,
           onUpdate:function(f,v){onUpdateArticle(i,f,v);},
-          onDelete:articles.length>0?function(){onDeleteArticle(i);}:null
+          onDelete:articles.length>0?function(){onDeleteArticle(i);}:null,
+          onApprove:function(){if(onApprove)onApprove(i);}
         });
       }),
     React.createElement('button',{className:'medios-add-btn',onClick:onAddArticle},
@@ -1619,22 +1782,16 @@ function FormNegocio({data,onChange}){
               return {
                 emoji:s.emoji, titulo:s.titulo,
                 preguntas:s.preguntas.map(function(p){
-                  return {
-                    pregunta:p.label,
-                    respuesta:p.tipo==='radio'?d[p.key]:d[p.key]||'',
-                    tipo:p.tipo
-                  };
+                  return {pregunta:p.label,respuesta:p.tipo==='radio'?d[p.key]:d[p.key]||'',tipo:p.tipo};
                 })
               };
             });
-            downloadFormPDF(
-              'Conociendo tu negocio',
-              'Cuestionario estratégico completado por el cliente',
-              sections,
-              'conociendo-tu-negocio.pdf'
-            );
+            downloadFormPDF('Conociendo tu negocio','Cuestionario estratégico completado por el cliente',sections,'conociendo-tu-negocio.pdf');
+            // Send email with form content
+            const body=sections.map(function(s){return s.titulo+':\n'+s.preguntas.map(function(p){return '  '+p.pregunta+'\n  → '+(p.respuesta||'—');}).join('\n');}).join('\n\n');
+            sendEmail('onboarding','Formulario completado','Cliente Docrys & DC',new Date().toLocaleString('es-ES'),'Conociendo tu negocio — '+body.substring(0,200));
           }
-        },'⬇️ Descargar PDF')
+        },'⬇️ Descargar y enviar')
       ),
     )
   );
@@ -1895,14 +2052,11 @@ function FormMarca({data,onChange}){
                 })
               };
             });
-            downloadFormPDF(
-              'Identidad de marca',
-              'Cuestionario estratégico PQC completado por el cliente',
-              sections,
-              'identidad-de-marca.pdf'
-            );
+            downloadFormPDF('Identidad de marca','Cuestionario estratégico PQC completado por el cliente',sections,'identidad-de-marca.pdf');
+            const body=sections.map(function(s){return s.titulo+':\n'+s.preguntas.map(function(p){return '  '+p.pregunta+'\n  → '+(p.respuesta||'—');}).join('\n');}).join('\n\n');
+            sendEmail('onboarding','Formulario completado','Cliente Docrys & DC',new Date().toLocaleString('es-ES'),'Identidad de marca — '+body.substring(0,200));
           }
-        },'⬇️ Descargar PDF')
+        },'⬇️ Descargar y enviar')
       ),
     )
   );
@@ -2346,8 +2500,43 @@ function App(){
   });
   const[pts,setPts]=useState(()=>loadPts());
   const[saved,setSaved]=useState(true);
+  const[syncing,setSyncing]=useState(true);
   const timer=useRef(null);
   const[pubPlanLink,setPubPlanLink]=useState(()=>lsGet('pub_plan_link')||'');
+
+  // Load from Supabase on mount
+  useEffect(()=>{
+    sbLoad().then(function(remote){
+      if(remote){
+        if(remote['contact'])setContact(remote['contact']);
+        if(remote['onboarding'])setOnboarding(remote['onboarding']);
+        if(remote['agency'])setAgency(remote['agency']);
+        if(remote['pts'])setPts(remote['pts']);
+        if(remote['pub_plan_link'])setPubPlanLink(remote['pub_plan_link']);
+        const newRRSS=loadRRSS();
+        for(const m of MONTHS){
+          if(remote['rrss_'+m.key])newRRSS[m.key]=remote['rrss_'+m.key];
+        }
+        setRRSS(newRRSS);
+        const newSEO=loadSEO();
+        for(const m of MONTHS){
+          if(remote['seo_'+m.key])newSEO[m.key]=remote['seo_'+m.key];
+        }
+        setSEO(newSEO);
+        const newPUB=loadPUB();
+        for(const m of MONTHS){
+          if(remote['pub_'+m.key])newPUB[m.key]=remote['pub_'+m.key];
+        }
+        setPUB(newPUB);
+        const newMedios={};
+        for(const m of MONTHS){
+          newMedios[m.key]=remote['medios_'+m.key]||lsGet('medios_'+m.key)||[];
+        }
+        setMedios(newMedios);
+      }
+      setSyncing(false);
+    });
+  },[]);
 
   // autosave
   useEffect(()=>{
@@ -2356,6 +2545,10 @@ function App(){
     timer.current=setTimeout(()=>{
       for(const m of MONTHS){lsSet('rrss_'+m.key,rrss[m.key]);lsSet('seo_'+m.key,seo[m.key]);lsSet('pub_'+m.key,pub[m.key]);lsSet('medios_'+m.key,medios[m.key]);}
       lsSet('pts',pts); lsSet('contact',contact); lsSet('onboarding',onboarding); lsSet('agency',agency);
+      // Sync to Supabase
+      const snapshot={contact,onboarding,agency,pts};
+      for(const m of MONTHS){snapshot['rrss_'+m.key]=rrss[m.key];snapshot['seo_'+m.key]=seo[m.key];snapshot['pub_'+m.key]=pub[m.key];snapshot['medios_'+m.key]=medios[m.key];}
+      sbSave(snapshot);
       setSaved(true);
     },800);
   },[rrss,seo,pub,pts,contact,onboarding,agency,medios]);
@@ -2395,6 +2588,9 @@ function App(){
   },[]);
   const updateSEOReport=useCallback((mk,v)=>{
     setSEO(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk].reportLink=v;return n;});
+  },[]);
+  const updateSEOSeoTecnico=useCallback((mk,v)=>{
+    setSEO(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk].cambiosSeoTecnico=v;return n;});
   },[]);
   const addSEOArticle=useCallback((mk)=>{
     setSEO(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk].articles.push({title:'',kw:'',type:'Blog',notas:'',linkArticulo:'',date:'',status:'pendiente'});return n;});
@@ -2446,6 +2642,18 @@ function App(){
   const deleteFile=useCallback(function(i){setContact(prev=>{const n=JSON.parse(JSON.stringify(prev));if(n.files)n.files.splice(i,1);return n;});  },[]);
 
   // ── STATS
+  if(syncing)return React.createElement('div',{style:{
+    position:'fixed',inset:0,background:'#1a0a2e',display:'flex',flexDirection:'column',
+    alignItems:'center',justifyContent:'center',gap:16,zIndex:9999
+  }},
+    React.createElement('div',{style:{
+      width:48,height:48,borderRadius:'50%',
+      border:'4px solid rgba(168,85,247,.2)',borderTopColor:'#a855f7',
+      animation:'spin 0.8s linear infinite'
+    }}),
+    React.createElement('div',{style:{color:'#c084fc',fontSize:14,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase'}},'Cargando portal...'),
+    React.createElement('style',null,'@keyframes spin{to{transform:rotate(360deg)}}')
+  );
   const mo=MONTHS.find(m=>m.key===month);
   const mDataR=rrss[month]||[];
   const allR=mDataR.flatMap(w=>[...w.ig,...(w.customIg||[])]);
@@ -2548,6 +2756,7 @@ function App(){
         mk:month,monthData:mDataS,monthName:mo.name,
         onUpdateArticle:(i,f,v)=>updateSEOArticle(month,i,f,v),
         onUpdateReport:(v)=>updateSEOReport(month,v),
+        onUpdateSeoTecnico:(v)=>updateSEOSeoTecnico(month,v),
         onAddArticle:()=>addSEOArticle(month),
         onDeleteArticle:(i)=>deleteSEOArticle(month,i),
         onApprove:(i)=>approveSEO(month,i),
