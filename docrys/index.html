@@ -1479,7 +1479,7 @@ function MediosArticleCard({data,idx,onUpdate,onDelete,onApprove}){
   );
 }
 
-function MediosSection({data,onUpdateArticle,onAddArticle,onDeleteArticle}){
+function MediosSection({data,onUpdateArticle,onAddArticle,onDeleteArticle,onApprove}){
   const articles=data||[];
   return React.createElement('div',{className:'medios-section'},
     articles.length===0
@@ -2630,6 +2630,7 @@ function App(){
   const updateMediosArticle=useCallback(function(mk,i,f,v){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk][i][f]=v;return n;});  },[]);
   const addMediosArticle=useCallback(function(mk){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk]=[...(n[mk]||[]),{id:Date.now(),titular:'',titular2:'',titular3:'',texto:'',keywords:'',contactoNombre:'',contactoTel:'',web:'',foto1:'',foto2:'',foto3:'',fotoSeleccionada:undefined,status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',historial:[]}];return n;});  },[]);
   const deleteMediosArticle=useCallback(function(mk,i){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk].splice(i,1);return n;});  },[]);
+  const approveMedios=useCallback(function(mk,i){setPts(function(p){return p+5;});  },[]);
 
   const toggleOnboarding=useCallback(function(id){setOnboarding(prev=>{const n=JSON.parse(JSON.stringify(prev));n.checks[id]=!n.checks[id];return n;});  },[]);
   const updateOnboardingLink=useCallback(function(key,val){setOnboarding(prev=>{const n=JSON.parse(JSON.stringify(prev));n.links[key]=val;return n;});  },[]);
@@ -2792,6 +2793,7 @@ function App(){
         onUpdateArticle:function(i,f,v){updateMediosArticle(month,i,f,v);},
         onAddArticle:function(){addMediosArticle(month);},
         onDeleteArticle:function(i){deleteMediosArticle(month,i);},
+        onApprove:function(i){approveMedios(month,i);},
       }),
 
       // ── AGENCIA CONTENT
