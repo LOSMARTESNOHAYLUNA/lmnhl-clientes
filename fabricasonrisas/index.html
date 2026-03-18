@@ -510,6 +510,8 @@ body{font-family:Poppins,system-ui,sans-serif;background:#F5F0FF;color:#1A0B2E;m
 .welcome-cta:active{transform:translateY(0)}
 .welcome-skip{display:block;text-align:center;margin-top:12px;font-size:11px;color:#A89CC0;cursor:pointer;background:none;border:none;font-family:inherit;transition:color .15s;width:100%}
 .welcome-skip:hover{color:#7C3AED}
+.welcome-video-wrap{border-radius:10px;overflow:hidden;margin-bottom:16px;background:#000;aspect-ratio:16/9}
+.welcome-video{width:100%;height:100%;display:block}
 </style>
 </head>
 <body>
@@ -534,7 +536,7 @@ const MONTHS=[
   {key:'2026-12',name:'Dic',short:'Dic',weeks:['1–7 Dic','8–14 Dic','15–21 Dic','22–31 Dic']},
 ];
 
-const FIRMA='📞 91 307 12 07  |  📲 WhatsApp: 609 454 432  |  🌐 www.docrysdc.es';
+const FIRMA='';
 const DEFAULT_HASHTAGS='#FabricaDeSonrisas #ClínicaDental #OdontologíaGranada';
 
 const TOAST_MSGS=[
@@ -562,7 +564,7 @@ function showToast(){
   setTimeout(()=>el.remove(),3000);
 }
 
-const LS_PFX='docrys26v3_';
+const LS_PFX='lfs26v1_';
 function lsGet(k){try{return JSON.parse(localStorage.getItem(LS_PFX+k)||'null');}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(LS_PFX+k,JSON.stringify(v));}catch(e){}}
 
@@ -587,107 +589,107 @@ const ADD_TYPES_RRSS=[
 
 const PLAN_RRSS={
 '2026-04':[
-  {ig:[{type:'reel',topic:'Cocina Santos Cashmere + Roble Natural: del render al resultado final',pillar:'Proyecto'},{type:'carrusel',topic:'5 tendencias en cocinas de diseño que marcarán 2026',pillar:'Tendencias'},{type:'historia',topic:'Encimera Neolith Himalaya Crystal: textura, luz y elegancia',pillar:'Materiales'},{type:'blog',topic:'Cómo elegir la distribución perfecta para tu cocina: guía completa',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Timelapse de montaje: así nace una cocina Santos en La Fábrica de Sonrisas',pillar:'Marca'},{type:'carrusel',topic:'Neolith vs Dekton vs Silestone: qué encimera elegir',pillar:'Materiales'},{type:'historia',topic:'¿Sabías que tardamos +30h diseñando cada proyecto antes de ejecutarlo?',pillar:'Marca'},{type:'reel',topic:'Proyecto salón Boadilla: palillería, madera y luz estratégica',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Antes y después: reforma integral de cocina en Madrid',pillar:'Proyecto'},{type:'carrusel',topic:'La importancia de la iluminación en diseño de interiores: 6 claves',pillar:'Educativo'},{type:'historia',topic:'Grifería Veravent: diseño que se nota en cada uso del día a día',pillar:'Materiales'},{type:'blog',topic:'Proyectos integrales vs reformas parciales: cuándo elegir cada opción',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Así diseñamos cocinas: de la primera reunión al proyecto 3D',pillar:'Servicios'},{type:'carrusel',topic:'Cocinas con isla: diseño, funcionalidad y las preguntas previas',pillar:'Tendencias'},{type:'historia',topic:'El equipo La Fábrica de Sonrisas: 40 profesionales detrás de cada proyecto',pillar:'Marca'},{type:'reel',topic:'Proyecto vestidor a medida: optimización, materiales y resultado',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Materiales'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Servicios'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-05':[
-  {ig:[{type:'reel',topic:'Cocina en verde salvia con Neolith Himalaya: materiales y resultado',pillar:'Proyecto'},{type:'carrusel',topic:'Papel pintado en cocina: por qué funciona y cómo elegir',pillar:'Educativo'},{type:'historia',topic:'Electrodomésticos Miele: tecnología que transforma la experiencia culinaria',pillar:'Materiales'},{type:'blog',topic:'Cocina abierta al salón sin perder funcionalidad ni estilo',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Cocina en tonos blancos y madera: minimalismo cálido',pillar:'Proyecto'},{type:'carrusel',topic:'¿Por qué necesitas un interiorista profesional? 5 beneficios',pillar:'Servicios'},{type:'historia',topic:'Encimera Dekton REM en acabado Velvet: sofisticación y resistencia',pillar:'Materiales'},{type:'reel',topic:'Proyecto baño principal: materiales premium y diseño',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'De diseño 3D a realidad: cocina Santos en Cashmere y Nogal Tierra',pillar:'Proyecto'},{type:'carrusel',topic:'Tipos de apertura Santos: tiradores, gola y push — cuál elegir',pillar:'Educativo'},{type:'historia',topic:'Showrooms La Fábrica de Sonrisas: 4 espacios en Madrid para inspirarte',pillar:'Servicios'},{type:'blog',topic:'Los mejores materiales para encimeras de cocina en 2026',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Salón con revestimiento y madera: diseño para zona de estufa',pillar:'Proyecto'},{type:'carrusel',topic:'Tendencias en baños de lujo: materiales y acabados para 2026',pillar:'Tendencias'},{type:'historia',topic:'Campanas Falmec: diseño que equilibra estética y rendimiento',pillar:'Materiales'},{type:'reel',topic:'Habitación principal con vestidor integrado: armonía y orden',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Servicios'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Servicios'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-06':[
-  {ig:[{type:'reel',topic:'Recibidor: armario ELLE de Emede, espejo a medida y lámparas de diseño',pillar:'Proyecto'},{type:'carrusel',topic:'Cómo elegir el sofá ideal para tu salón: guía La Fábrica de Sonrisas',pillar:'Educativo'},{type:'historia',topic:'Vitrina Santos con LED integrado: almacenaje que también decora',pillar:'Materiales'},{type:'blog',topic:'Errores de decoración que hacen que tu casa parezca más pequeña',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Cocina con isla y encimera de mármol natural: lujo cotidiano',pillar:'Proyecto'},{type:'carrusel',topic:'Iluminación en cocinas: carril de focos, LED bajo muebles y colgantes',pillar:'Educativo'},{type:'historia',topic:'Vinoteca Dunavox Horizon en Cashmere: diseño premium para el vino',pillar:'Materiales'},{type:'reel',topic:'Proyecto hostal: cómo el interiorismo transforma la experiencia',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Antes y después en cocina: del espacio sin personalidad al diseño de autor',pillar:'Proyecto'},{type:'carrusel',topic:'Islas de cocina multifuncionales: usos, medidas y materiales',pillar:'Educativo'},{type:'historia',topic:'Siemens cookConnect: cocción limpia sin campana a la vista',pillar:'Materiales'},{type:'blog',topic:'Diseño con alma: espacios que inspiran y transmiten emociones',pillar:'Tendencias'}]},
-  {ig:[{type:'reel',topic:'Mesa extensible Ozzio Italia: funcionalidad y diseño italiano',pillar:'Materiales'},{type:'carrusel',topic:'El proceso de diseño en La Fábrica de Sonrisas: del primer contacto al resultado',pillar:'Servicios'},{type:'historia',topic:'Proyecto 3D: así visualizamos tu espacio antes de ejecutarlo',pillar:'Servicios'},{type:'reel',topic:'Proyecto cocina en tonos tierra: calidez y materiales atemporales',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Tendencias'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Materiales'},{type:'carrusel',topic:'',pillar:'Servicios'},{type:'historia',topic:'',pillar:'Servicios'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-07':[
-  {ig:[{type:'reel',topic:'Reforma integral de vivienda: arquitectura y diseño al mismo ritmo',pillar:'Proyecto'},{type:'carrusel',topic:'Cocinas abiertas o cerradas: cómo elegir según tu estilo de vida',pillar:'Educativo'},{type:'historia',topic:'Cafetera empotrable Miele: café de barista desde tu cocina',pillar:'Materiales'},{type:'blog',topic:'Smart kitchens: domótica aplicada al diseño de cocinas en 2026',pillar:'Tendencias'}]},
-  {ig:[{type:'reel',topic:'Baño de invitados con mucha personalidad: materiales y detalles únicos',pillar:'Proyecto'},{type:'carrusel',topic:'Papeles pintados en el hogar: cómo elegir el correcto para cada estancia',pillar:'Educativo'},{type:'historia',topic:'Placa de inducción Siemens: precisión y diseño en cada zona de cocción',pillar:'Materiales'},{type:'reel',topic:'Proyecto comedor con mesa redonda: por qué esta forma cambia la experiencia',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Cocina Santos con casco grafeno y encimera Pietra Grey Silk',pillar:'Proyecto'},{type:'carrusel',topic:'Dormitorios relajantes: claves para diseñar un espacio que invita al descanso',pillar:'Educativo'},{type:'historia',topic:'Lámpara Sofì de Bonaldo: vidrio soplado y latón bruñido',pillar:'Materiales'},{type:'blog',topic:'Altura perfecta de los muebles de cocina según ergonomía',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Proyecto Griñón — salón-comedor: muebles a medida y carril de iluminación',pillar:'Proyecto'},{type:'carrusel',topic:'Mesas de comedor: redondas, cuadradas o rectangulares — cuál elegir',pillar:'Educativo'},{type:'historia',topic:'La Fábrica de Sonrisas en verano: proyectos activos y fechas de atención',pillar:'Marca'},{type:'reel',topic:'Timelapse de julio: obras en marcha y materiales que cobran vida',pillar:'Marca'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Tendencias'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Marca'}]},
 ],
 '2026-08':[
-  {ig:[{type:'reel',topic:'Proyecto habitación infantil: colores, funcionalidad y detalles',pillar:'Proyecto'},{type:'carrusel',topic:'5 soluciones de almacenaje para cocinas sin perder estilo',pillar:'Educativo'},{type:'historia',topic:'Frigorífico Siemens combi integrable: tecnología NoFrost',pillar:'Materiales'},{type:'blog',topic:'Muebles de baño suspendidos: estética minimalista y ventajas prácticas',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'La Fábrica de Sonrisas: 30 años transformando hogares en Madrid',pillar:'Marca'},{type:'carrusel',topic:'Reforma de baño paso a paso: fases, plazos y materiales',pillar:'Educativo'},{type:'historia',topic:'Quooker Cube: agua fría, caliente y con gas desde tu grifo',pillar:'Materiales'},{type:'reel',topic:'Proyecto salón: mueble TV a medida con vitrinas retroiluminadas',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Avances de agosto: proyectos en obra y materiales que cobran vida',pillar:'Marca'},{type:'carrusel',topic:'Checklist antes de reformar tu cocina: 10 puntos clave',pillar:'Educativo'},{type:'historia',topic:'4 showrooms en Madrid: ven a tocar y sentir los materiales',pillar:'Servicios'},{type:'blog',topic:'Tendencias de decoración de hogar para el segundo semestre de 2026',pillar:'Tendencias'}]},
-  {ig:[{type:'reel',topic:'Septiembre a la vista: proyectos que arrancan y novedades',pillar:'Marca'},{type:'carrusel',topic:'Palillería para dividir espacios: cuándo usarla y cómo integrarla',pillar:'Educativo'},{type:'historia',topic:'Armario ELLE de Emede: diseño que organiza sin sacrificar estética',pillar:'Materiales'},{type:'reel',topic:'Habitaciones con identidad: proyectos donde el diseño habla del cliente',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Servicios'},{type:'blog',topic:'',pillar:'Tendencias'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-09':[
-  {ig:[{type:'reel',topic:'Vuelta a septiembre: proyectos de reforma con el otoño en Madrid',pillar:'Servicios'},{type:'carrusel',topic:'Cómo integrar cocina y salón sin perder la personalidad de cada espacio',pillar:'Educativo'},{type:'historia',topic:'Encimera Ascale Lucca Gold en Velvet: mármol en estética, tecnología en durabilidad',pillar:'Materiales'},{type:'blog',topic:'Interiorismo que revaloriza tu vivienda',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Caso real — reforma integral: del primer plano al resultado final',pillar:'Proyecto'},{type:'carrusel',topic:'El sofá como pieza protagonista: cómo elegir el ideal',pillar:'Educativo'},{type:'historia',topic:'Mesa RADO Keramik de Cattelan Italia: cerámica y madera de bosques renovables',pillar:'Materiales'},{type:'reel',topic:'Proyecto cocina en negro y madera: contraste y función perfecta',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Proyecto lavadero Santos: funcionalidad, orden y diseño',pillar:'Proyecto'},{type:'carrusel',topic:'Cómo crear ambientes acogedores: materiales, luz y texturas',pillar:'Tendencias'},{type:'historia',topic:'Cajones Santos con extracción total y cierre suave',pillar:'Materiales'},{type:'blog',topic:'Qué estilo de cocina combina con tu personalidad',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Proyecto baños de lujo: tres baños distintos, un mismo nivel de detalle',pillar:'Proyecto'},{type:'carrusel',topic:'¿Por qué confiar en interioristas profesionales? 5 beneficios reales',pillar:'Servicios'},{type:'historia',topic:'La Fábrica de Sonrisas en medios especializados: autoridad y presencia de marca',pillar:'Marca'},{type:'reel',topic:'Cocina abierta al comedor: distribución, iluminación y materiales que unen',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Servicios'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Servicios'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-10':[
-  {ig:[{type:'reel',topic:'Reforma integral de otoño: muebles a medida, luz y materiales nobles',pillar:'Proyecto'},{type:'carrusel',topic:'Espacios minimalistas: cómo lograr armonía visual con pocos elementos',pillar:'Tendencias'},{type:'historia',topic:'Mesa Papel Keramik de Cattelan Italia: diseño escultórico italiano',pillar:'Materiales'},{type:'blog',topic:'Proyectos integrales de diseño: ventajas y resultados reales',pillar:'Servicios'}]},
-  {ig:[{type:'reel',topic:'Cocinas Santos exportadas: La Fábrica de Sonrisas lleva proyectos más allá de Madrid',pillar:'Marca'},{type:'carrusel',topic:'Dormitorio relajante: claves para descansar mejor cada noche',pillar:'Educativo'},{type:'historia',topic:'Evento con marcas premium de electrodomésticos: La Fábrica de Sonrisas en vanguardia',pillar:'Marca'},{type:'reel',topic:'Cocina con isla abierta: encimera efecto óxido y muebles sin tiradores',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Proyecto recibidor de lujo: primera impresión que dice todo',pillar:'Proyecto'},{type:'carrusel',topic:'Tendencias en cocinas Santos para 2026: colores, acabados y novedades',pillar:'Tendencias'},{type:'historia',topic:'Accesorios Santos: colmena en cristal Fumé y soluciones inteligentes',pillar:'Materiales'},{type:'blog',topic:'Cocinas de lujo: diseño a medida, materiales premium y tendencias',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'La Fábrica de Sonrisas en feria de diseño: novedades y tendencias internacionales',pillar:'Marca'},{type:'carrusel',topic:'Cabeceros de cama: tapizados, madera y panelados con carácter',pillar:'Educativo'},{type:'historia',topic:'Reforma en marcha: así iniciamos la transformación de cada espacio',pillar:'Servicios'},{type:'reel',topic:'Habitación de invitados: escritorio, papel pintado y madera a medida',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Servicios'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Servicios'},{type:'reel',topic:'',pillar:'Proyecto'}]},
 ],
 '2026-11':[
-  {ig:[{type:'reel',topic:'Cocina contemporánea: materiales que equilibran modernidad y calidez',pillar:'Proyecto'},{type:'carrusel',topic:'Islas de cocina: tipos, medidas y materiales para acertar',pillar:'Educativo'},{type:'historia',topic:'Grifo Gessi de Veravent: latón cepillado y líneas contemporáneas',pillar:'Materiales'},{type:'blog',topic:'Decoración emocional: cómo tu entorno influye en tu bienestar',pillar:'Tendencias'}]},
-  {ig:[{type:'reel',topic:'Cocina Santos en verde salvia: serenidad, Neolith Himalaya y AEG',pillar:'Proyecto'},{type:'carrusel',topic:'¿Qué ocurre en cada fase de tu proyecto con La Fábrica de Sonrisas?',pillar:'Servicios'},{type:'historia',topic:'Estudio de Chamberí renovado: un espacio para inspirarte',pillar:'Marca'},{type:'reel',topic:'Cocina en paralelo con madera hasta el techo: espacio estrecho, gran diseño',pillar:'Proyecto'}]},
-  {ig:[{type:'reel',topic:'Proyecto reforma salón: materiales con propósito que resuelven y enamoran',pillar:'Proyecto'},{type:'carrusel',topic:'Decoración nórdica: 10 claves para espacios luminosos y acogedores',pillar:'Tendencias'},{type:'historia',topic:'Placa Siemens + extractor integrado: cocción limpia sin campana',pillar:'Materiales'},{type:'blog',topic:'Espacios para sentir: el interiorismo como herramienta de bienestar',pillar:'Tendencias'}]},
-  {ig:[{type:'reel',topic:'Cocina gris arena: de idea a resultado con el equipo La Fábrica de Sonrisas',pillar:'Proyecto'},{type:'carrusel',topic:'Top 5 materiales imprescindibles en cocinas modernas de 2026',pillar:'Educativo'},{type:'historia',topic:'Balance de noviembre: proyectos entregados y clientes que confían',pillar:'Marca'},{type:'reel',topic:'Cocinas con vitrinas iluminadas: el almacenaje como decoración',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Tendencias'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Servicios'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Proyecto'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Materiales'},{type:'blog',topic:'',pillar:'Tendencias'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Educativo'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Educativo'}]},
 ],
 '2026-12':[
-  {ig:[{type:'reel',topic:'Cocina con materiales atemporales: para un hogar que dura generaciones',pillar:'Proyecto'},{type:'carrusel',topic:'Tendencias de interiorismo para 2027: lo que ya está pasando',pillar:'Tendencias'},{type:'historia',topic:'Felicitación del equipo: los profesionales que hacen posible cada proyecto',pillar:'Marca'},{type:'blog',topic:'Cómo preparar tu hogar para las fiestas con detalles de interiorismo',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Los proyectos más destacados de 2026 en La Fábrica de Sonrisas',pillar:'Marca'},{type:'carrusel',topic:'El año en diseño: los proyectos que marcaron 2026',pillar:'Marca'},{type:'historia',topic:'Cerramos por vacaciones: fechas y cómo contactarnos en Navidad',pillar:'Marca'},{type:'reel',topic:'Showrooms La Fábrica de Sonrisas: ven a inspirarte antes del año nuevo',pillar:'Servicios'}]},
-  {ig:[{type:'reel',topic:'Feliz Navidad de parte de todo el equipo de La Fábrica de Sonrisas',pillar:'Marca'},{type:'carrusel',topic:'Guía 2027: cómo planificar tu reforma integral con tiempo y sin estrés',pillar:'Servicios'},{type:'historia',topic:'Tradición y diseño: felicitación navideña con proyecto destacado',pillar:'Marca'},{type:'blog',topic:'Cocinas Santos: por qué lidera el diseño de alta gama en España',pillar:'Educativo'}]},
-  {ig:[{type:'reel',topic:'Feliz 2027: todo lo que La Fábrica de Sonrisas tiene preparado',pillar:'Marca'},{type:'carrusel',topic:'Predicciones de diseño de interiores para 2027',pillar:'Tendencias'},{type:'historia',topic:'Gracias 2026: proyectos, clientes y un equipo que lo da todo',pillar:'Marca'},{type:'blog',topic:'Objetivos de diseño para 2027: cómo transformar tu hogar',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Proyecto'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Marca'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Marca'},{type:'historia',topic:'',pillar:'Marca'},{type:'reel',topic:'',pillar:'Servicios'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Servicios'},{type:'historia',topic:'',pillar:'Marca'},{type:'blog',topic:'',pillar:'Educativo'}]},
+  {ig:[{type:'reel',topic:'',pillar:'Marca'},{type:'carrusel',topic:'',pillar:'Tendencias'},{type:'historia',topic:'',pillar:'Marca'},{type:'blog',topic:'',pillar:'Educativo'}]},
 ],
 };
 
 // ── SEO PLAN ────────────────────────────────────────────────────────────
 const PLAN_SEO={
 '2026-04':[
-  {title:'Cómo elegir la distribución perfecta para tu cocina en Madrid',kw:'cocina a medida Madrid',type:'Blog'},
-  {title:'Proyectos integrales de diseño de interiores: ventajas y resultados',kw:'interiorismo integral Madrid',type:'Blog'},
-  {title:'Santos Cocinas: por qué es la marca líder en diseño de alta gama',kw:'cocinas Santos Madrid',type:'Ficha SEO'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Ficha SEO'},
 ],
 '2026-05':[
-  {title:'Cómo crear una cocina abierta al salón sin perder funcionalidad',kw:'cocina abierta salón Madrid',type:'Blog'},
-  {title:'Los mejores materiales para encimeras de cocina en 2026',kw:'encimeras cocina diseño',type:'Blog'},
-  {title:'La Fábrica de Sonrisas showrooms Madrid: visita nuestros estudios de interiorismo',kw:'showroom cocinas Madrid',type:'Ficha SEO'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Ficha SEO'},
 ],
 '2026-06':[
-  {title:'Diseño de cocinas de lujo en Madrid: materiales, precio y proceso',kw:'cocinas lujo Madrid',type:'Blog'},
-  {title:'Cómo integrar cocina y salón sin perder la identidad de cada espacio',kw:'cocina salón integrado diseño',type:'Blog'},
-  {title:'Errores de decoración que hacen que tu casa parezca más pequeña',kw:'decoración interiorismo errores',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
 ],
 '2026-07':[
-  {title:'Smart kitchens: domótica aplicada al diseño de cocinas modernas',kw:'cocinas inteligentes domotica',type:'Blog'},
-  {title:'Altura perfecta de los muebles de cocina según ergonomía y bienestar',kw:'ergonomia cocina muebles altura',type:'Blog'},
-  {title:'Cocinas Santos: guía completa de acabados, colores y configuraciones',kw:'colores cocinas Santos',type:'Ficha SEO'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Ficha SEO'},
 ],
 '2026-08':[
-  {title:'Muebles de baño suspendidos: estética minimalista y ventajas prácticas',kw:'muebles baño suspendidos diseño',type:'Blog'},
-  {title:'Tendencias de decoración de hogar para el segundo semestre de 2026',kw:'tendencias decoracion 2026',type:'Blog'},
-  {title:'Reforma de baño en Madrid: fases, plazos y materiales a considerar',kw:'reforma baño Madrid',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
 ],
 '2026-09':[
-  {title:'Interiorismo que revaloriza tu vivienda: lo que el diseño aporta al valor inmueble',kw:'interiorismo revalorizar vivienda',type:'Blog'},
-  {title:'Qué estilo de cocina combina con tu personalidad: guía para acertar',kw:'estilos cocina diseño personalidad',type:'Blog'},
-  {title:'Cocinas de lujo en Madrid: del proyecto al resultado final',kw:'cocinas lujo proyecto Madrid',type:'Ficha SEO'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Ficha SEO'},
 ],
 '2026-10':[
-  {title:'Proyectos integrales de diseño: ventajas y resultados reales en Madrid',kw:'proyecto integral interiorismo',type:'Blog'},
-  {title:'Cocinas de lujo: diseño a medida, materiales premium y tendencias 2026',kw:'cocinas premium Madrid',type:'Blog'},
-  {title:'Espacios minimalistas en interiorismo: cómo lograr armonía visual',kw:'interiorismo minimalista Madrid',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
 ],
 '2026-11':[
-  {title:'Decoración emocional: cómo tu entorno influye en tu bienestar diario',kw:'decoracion emocional bienestar hogar',type:'Blog'},
-  {title:'Espacios para sentir: el interiorismo como herramienta de calidad de vida',kw:'interiorismo bienestar espacios',type:'Blog'},
-  {title:'Top 5 materiales imprescindibles en cocinas modernas de 2026',kw:'materiales cocinas modernas',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
 ],
 '2026-12':[
-  {title:'Tendencias de interiorismo para 2027: lo que ya está pasando y debes conocer',kw:'tendencias interiorismo 2027',type:'Blog'},
-  {title:'Cómo planificar tu reforma integral en 2027 con tiempo y sin estrés',kw:'reforma integral planificacion 2027',type:'Blog'},
-  {title:'La Fábrica de Sonrisas 2026: año en proyectos y los aprendizajes del equipo',kw:'La Fábrica de Sonrisas proyectos interiorismo',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
+  {title:'',kw:'',type:'Blog'},
 ],
 };
 
@@ -783,7 +785,7 @@ function UrlInput({value,onChange,placeholder,className,variant}){
   const btnClass='url-open-btn '+(v==='seo'?'seo':v==='pub'?'pub':'neutral');
   return React.createElement('div',{className:'url-wrap'},
     React.createElement('input',{className:(className||'link-input'),type:'text',value:value||'',onChange:function(e){onChange(e.target.value);},placeholder:placeholder||'https://...'}),
-    hasUrl?React.createElement('a',{className:btnClass,href:value.trim(),target:'_blank',rel:'noopener noreferrer',title:'Abrir enlace'},'🔗 Abrir'):null
+    hasUrl?React.createElement('a',{className:btnClass,href:value.trim(),target:'_blank',rel:'noopener noreferrer',title:''},'🔗 Abrir'):null
   );
 }
 
@@ -1043,7 +1045,7 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
     React.createElement('div',{className:'seo-links-row'},
       React.createElement('div',null,
         React.createElement('label',{className:'field-label',style:{color:'#1a4a48'}},'Enlace al artículo publicado'),
-        React.createElement(UrlInput,{value:data.linkArticulo||'',onChange:v=>onUpdate('linkArticulo',v),placeholder:'https://docrysdc.es/blog/...',className:'link-input seo',variant:'seo'})
+        React.createElement(UrlInput,{value:data.linkArticulo||'',onChange:v=>onUpdate('linkArticulo',v),placeholder:'https://lafabricadesonrisas.com/blog/...',className:'link-input seo',variant:'seo'})
       ),
       React.createElement('div',null,
         React.createElement('label',{className:'field-label',style:{color:'#1a4a48'}},'Fecha de publicación'),
@@ -1307,7 +1309,7 @@ function MediosArticleCard({data,idx,onUpdate,onDelete}){
       ),
       React.createElement('div',{className:'medios-field'},
         React.createElement('label',null,'Web a enlazar'),
-        React.createElement(UrlInput,{value:data.web||'',onChange:function(v){onUpdate('web',v);},placeholder:'https://docrysdc.es/...',variant:'rrss'})
+        React.createElement(UrlInput,{value:data.web||'',onChange:function(v){onUpdate('web',v);},placeholder:'https://lafabricadesonrisas.com/...',variant:'rrss'})
       ),
       // FOTOS
       React.createElement('div',{className:'medios-fotos-block'},
@@ -1932,21 +1934,21 @@ function FormMarca({data,onChange}){
 
 // ── ONBOARDING SECTION COMPONENT ──────────────────────────────────────
 const ONBOARDING_TASKS=[
-  {id:'contrato',    title:'Contrato firmado',                                  responsible:'sheila',label:'Sheila',   note:'Propuesta o contrato firmado en PDF con firma digital o física.',                           hasUrl:true, urlLabel:'Enlace al contrato firmado'},
-  {id:'rrss_li',     title:'Acceso RRSS: LinkedIn',                             responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a LinkedIn del cliente.',                                        hasUrl:true, urlLabel:'URL del perfil de LinkedIn'},
-  {id:'rrss_ig',     title:'Acceso RRSS: Instagram',                            responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a Instagram del cliente.',                                       hasUrl:true, urlLabel:'URL del perfil de Instagram'},
-  {id:'rrss_fb',     title:'Acceso RRSS: Facebook',                             responsible:'pm',    label:'PM',       note:'Solicitar acceso a Meta Business Suite del cliente.',                                        hasUrl:true, urlLabel:'URL de la página de Facebook'},
-  {id:'rrss_tt',     title:'Acceso RRSS: TikTok',                               responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a TikTok del cliente.',                                          hasUrl:true, urlLabel:'URL del perfil de TikTok'},
-  {id:'hosting',     title:'Acceso: Hosting + Página web',                      responsible:'pm',    label:'PM',       note:'Solicitar accesos de hosting y CMS (WordPress, Joomla, etc.) si el servicio lo requiere.', hasUrl:true, urlLabel:'Enlace al panel de hosting / CMS'},
-  {id:'gmb',         title:'Acceso: SEO – Google My Business',                  responsible:'jessy', label:'Jessy',    note:'Jessy gestiona la solicitud y verificación de acceso a Google My Business.',               hasUrl:true, urlLabel:'Enlace al perfil de Google My Business'},
-  {id:'gads',        title:'Acceso: Publicidad – Google Ads',                   responsible:'paola', label:'Paola',    note:'Paola gestiona el acceso a la cuenta de Google Ads. Si no existe, se crea y vincula.',     hasUrl:true, urlLabel:'Enlace a la cuenta de Google Ads'},
-  {id:'metaads',     title:'Acceso: Publicidad – Meta Ads + Tutorial',           responsible:'paola', label:'Paola',    note:'Paola gestiona el acceso a Meta Ads. Se envía tutorial al cliente si no sabe hacerlo.',   hasUrl:true, urlLabel:'Enlace a Meta Business Suite'},
-  {id:'seo_audit',   title:'Auditoría de SEO Técnico',                          responsible:'jessy', label:'Jessy',    note:'Jessy realiza la auditoría técnica del sitio web como base del trabajo SEO.',              hasUrl:true, urlLabel:'Enlace al informe de auditoría SEO'},
-  {id:'keywords',    title:'Estudio de Keywords',                               responsible:'jessy', label:'Jessy',    note:'Jessy elabora el estudio de palabras clave estratégicas para el cliente.',                 hasUrl:true, urlLabel:'Enlace al estudio de palabras clave'},
-  {id:'pago_tuto',   title:'Tutorial – Agregar método de pago en cuenta de anuncios', responsible:'paola', label:'Paola', note:'Paola envía tutorial al cliente para agregar método de pago en Google o Meta Ads.',  hasUrl:true, urlLabel:'Enlace al tutorial'},
-  {id:'hosting_mig', title:'Migración de Hosting (si aplica)',                  responsible:'pm',    label:'PM',       note:'Coordinar migración de hosting si el servicio lo requiere. Confirmar fechas con el cliente.'},
-  {id:'kickoff',     title:'Reunión de Kick-off (30–45 min)',                   responsible:'pm',    label:'PM',       note:'Alinear expectativas, plazos, flujo de trabajo y canal de comunicación preferente.',        hasUrl:true, urlLabel:'Enlace a las notas / grabación del kick-off'},
-  {id:'account',     title:'Account responsable comunicado al cliente',         responsible:'pm',    label:'PM',       note:'Confirmar por escrito quién es el account de referencia y cómo contactarle.'},
+  {id:'contrato',    title:'',                                  responsible:'sheila',label:'Sheila',   note:'Propuesta o contrato firmado en PDF con firma digital o física.',                           hasUrl:true, urlLabel:'Enlace al contrato firmado'},
+  {id:'rrss_li',     title:'',                             responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a LinkedIn del cliente.',                                        hasUrl:true, urlLabel:'URL del perfil de LinkedIn'},
+  {id:'rrss_ig',     title:'',                            responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a Instagram del cliente.',                                       hasUrl:true, urlLabel:'URL del perfil de Instagram'},
+  {id:'rrss_fb',     title:'',                             responsible:'pm',    label:'PM',       note:'Solicitar acceso a Meta Business Suite del cliente.',                                        hasUrl:true, urlLabel:'URL de la página de Facebook'},
+  {id:'rrss_tt',     title:'',                               responsible:'pm',    label:'PM',       note:'Solicitar acceso de gestión a TikTok del cliente.',                                          hasUrl:true, urlLabel:'URL del perfil de TikTok'},
+  {id:'hosting',     title:'',                      responsible:'pm',    label:'PM',       note:'Solicitar accesos de hosting y CMS (WordPress, Joomla, etc.) si el servicio lo requiere.', hasUrl:true, urlLabel:'Enlace al panel de hosting / CMS'},
+  {id:'gmb',         title:'',                  responsible:'jessy', label:'Jessy',    note:'Jessy gestiona la solicitud y verificación de acceso a Google My Business.',               hasUrl:true, urlLabel:'Enlace al perfil de Google My Business'},
+  {id:'gads',        title:'',                   responsible:'paola', label:'Paola',    note:'Paola gestiona el acceso a la cuenta de Google Ads. Si no existe, se crea y vincula.',     hasUrl:true, urlLabel:'Enlace a la cuenta de Google Ads'},
+  {id:'metaads',     title:'',           responsible:'paola', label:'Paola',    note:'Paola gestiona el acceso a Meta Ads. Se envía tutorial al cliente si no sabe hacerlo.',   hasUrl:true, urlLabel:'Enlace a Meta Business Suite'},
+  {id:'seo_audit',   title:'',                          responsible:'jessy', label:'Jessy',    note:'Jessy realiza la auditoría técnica del sitio web como base del trabajo SEO.',              hasUrl:true, urlLabel:'Enlace al informe de auditoría SEO'},
+  {id:'keywords',    title:'',                               responsible:'jessy', label:'Jessy',    note:'Jessy elabora el estudio de palabras clave estratégicas para el cliente.',                 hasUrl:true, urlLabel:'Enlace al estudio de palabras clave'},
+  {id:'pago_tuto',   title:'', responsible:'paola', label:'Paola', note:'Paola envía tutorial al cliente para agregar método de pago en Google o Meta Ads.',  hasUrl:true, urlLabel:'Enlace al tutorial'},
+  {id:'hosting_mig', title:'',                  responsible:'pm',    label:'PM',       note:'Coordinar migración de hosting si el servicio lo requiere. Confirmar fechas con el cliente.'},
+  {id:'kickoff',     title:'',                   responsible:'pm',    label:'PM',       note:'Alinear expectativas, plazos, flujo de trabajo y canal de comunicación preferente.',        hasUrl:true, urlLabel:'Enlace a las notas / grabación del kick-off'},
+  {id:'account',     title:'',         responsible:'pm',    label:'PM',       note:'Confirmar por escrito quién es el account de referencia y cómo contactarle.'},
 ];
 
 function OnboardingSection({data,onToggle,onUpdateLink,onUpdateForm}){
@@ -2248,7 +2250,7 @@ function ContactSection({data,onUpdateFiscal,onUpdateContact,onAddContact,onDele
           ),
           React.createElement('div',{className:'contact-field'},
             React.createElement('label',null,'Web'),
-            React.createElement(UrlInput,{value:fiscal.web||'',onChange:function(v){onUpdateFiscal('web',v);},placeholder:'https://docrysdc.es',variant:'rrss'})
+            React.createElement(UrlInput,{value:fiscal.web||'',onChange:function(v){onUpdateFiscal('web',v);},placeholder:'https://lafabricadesonrisas.com',variant:'rrss'})
           ),
           React.createElement('div',{className:'contact-field'},
             React.createElement('label',null,'Sector / Actividad'),
@@ -2277,7 +2279,7 @@ function ContactSection({data,onUpdateFiscal,onUpdateContact,onAddContact,onDele
                   React.createElement('div',{className:'contact-card-name'},c.nombre||'Nuevo contacto'),
                   c.puesto&&React.createElement('div',{className:'contact-card-role'},c.puesto)
                 ),
-                React.createElement('button',{className:'del-btn',onClick:function(){onDeleteContact(i);},title:'Eliminar contacto'},'✕')
+                React.createElement('button',{className:'del-btn',onClick:function(){onDeleteContact(i);},title:''},'✕')
               ),
               React.createElement('div',{className:'contact-card-grid'},
                 React.createElement('div',{className:'contact-field'},
@@ -2339,7 +2341,7 @@ function ContactSection({data,onUpdateFiscal,onUpdateContact,onAddContact,onDele
                   React.createElement('input',{type:'text',value:f.descripcion||'',onChange:function(e){onUpdateFile(i,'descripcion',e.target.value);},placeholder:'Descripción breve del contenido...'})
                 )
               ),
-              React.createElement('button',{className:'del-btn',onClick:function(){onDeleteFile(i);},title:'Eliminar archivo',style:{marginTop:2}},'✕')
+              React.createElement('button',{className:'del-btn',onClick:function(){onDeleteFile(i);},title:'',style:{marginTop:2}},'✕')
             );
           }),
         React.createElement('button',{className:'add-file-btn',onClick:onAddFile},
@@ -2352,7 +2354,7 @@ function ContactSection({data,onUpdateFiscal,onUpdateContact,onAddContact,onDele
 }
 
 // ── MAIN APP ────────────────────────────────────────────────────────────
-function WelcomeModal({onStart,onSkip}){
+function WelcomeModal({onStart,onSkip,videoUrl}){
   return React.createElement('div',{className:'welcome-overlay'},
     React.createElement('div',{className:'welcome-card'},
       React.createElement('div',{className:'welcome-top'},
@@ -2361,8 +2363,17 @@ function WelcomeModal({onStart,onSkip}){
         React.createElement('div',{className:'welcome-subtitle'},'Es tu primera vez aquí — empecemos juntos')
       ),
       React.createElement('div',{className:'welcome-body'},
+        videoUrl&&React.createElement('div',{className:'welcome-video-wrap'},
+          React.createElement('iframe',{
+            src:videoUrl,
+            frameBorder:'0',
+            allow:'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allowFullScreen:true,
+            className:'welcome-video'
+          })
+        ),
         React.createElement('div',{className:'welcome-highlight'},
-          '👋 Antes de entrar al plan digital, te recomendamos completar el ',
+          '👋 Antes de entrar, te recomendamos completar el ',
           React.createElement('strong',null,'onboarding'),
           ' para que todo esté bien configurado desde el principio.'
         ),
@@ -2377,7 +2388,7 @@ function WelcomeModal({onStart,onSkip}){
           ),
           React.createElement('div',{className:'welcome-step'},
             React.createElement('div',{className:'welcome-step-dot'},'3'),
-            '¡Accede al plan y empieza a crear contenido!'
+            'Revisa y aprueba los contenidos que preparamos para ti'
           )
         ),
         React.createElement('button',{className:'welcome-cta',onClick:onStart},'🚀 Empezar onboarding'),
@@ -2528,7 +2539,7 @@ function App(){
     setShowWelcome(false);
   }
   return React.createElement('div',null,
-    showWelcome&&React.createElement(WelcomeModal,{onStart:handleWelcomeStart,onSkip:handleWelcomeSkip}),
+    showWelcome&&React.createElement(WelcomeModal,{onStart:handleWelcomeStart,onSkip:handleWelcomeSkip,videoUrl:null}),
     // HEADER
     React.createElement('div',{className:'hdr'},
       React.createElement('div',{className:'hdr-top'},
