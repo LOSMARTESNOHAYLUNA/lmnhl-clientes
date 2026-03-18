@@ -160,7 +160,13 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 .budget-amount-wrap,.budget-tipo-wrap{display:flex;flex-direction:column;gap:4px}
 
 /* ── ENVIAR AL CLIENTE ── */
-/* ── DELETE MODAL ── */
+.st-select{padding:5px 10px;border-radius:8px;border:1.5px solid rgba(201,168,76,.35);background:#fff;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;color:#1a1205;outline:none;transition:all .2s}
+.st-select:focus{border-color:#c9a84c;box-shadow:0 0 0 2px rgba(201,168,76,.15)}
+.card.cambios{border-left-color:#f97316;background:linear-gradient(135deg,#fff7ed,#fff)}
+.seo-card.cambios{border-left-color:#f97316}
+.pub-card.cambios{border-left-color:#f97316}
+.medios-card.cambios{border-left-color:#f97316}
+
 .del-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(2px)}
 .del-modal{background:#fff;border-radius:14px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;animation:modalIn .2s ease}
 @keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
@@ -239,9 +245,13 @@ body{font-family:Poppins,system-ui,sans-serif;background:#f5f0e8;color:#1a1205;m
 .corr-add-btn:hover{background:#f5f0e8;border-color:#c9a84c}
 .corr-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;background:#fffdf7;border:1px solid rgba(201,168,76,.15);border-left:3px solid #f59e0b;transition:all .2s}
 .corr-item.done{background:#f0fdf4;border-color:rgba(34,197,94,.15);border-left-color:#22c55e;opacity:.75}
-.corr-check{width:20px;height:20px;border-radius:5px;border:2px solid #f59e0b;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;background:#fff}
-.corr-item.done .corr-check{background:#22c55e;border-color:#22c55e;color:#fff}
-.corr-text{flex:1;font-size:12px;color:#1a1205;line-height:1.5}
+.corr-check-btn{padding:3px 10px;border-radius:12px;border:1.5px solid #f59e0b;background:#fff;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;color:#b45309;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.corr-check-btn:hover{background:#fef3dc}
+.corr-check-btn.done{background:#22c55e;border-color:#22c55e;color:#fff}
+.corr-item.done .corr-check-btn{background:#22c55e;border-color:#22c55e;color:#fff}
+
+.corr-text{flex:1;font-size:12px;color:#1a1205;line-height:1.5;display:flex;flex-direction:column;gap:2px}
+.corr-fecha{font-size:10px;color:#aaa;font-style:italic}
 .corr-item.done .corr-text{color:#6b7280;text-decoration:line-through;text-decoration-color:rgba(107,114,128,.4)}
 .corr-del{font-size:10px;color:#ddd;background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:3px;transition:color .15s;flex-shrink:0}
 .corr-del:hover{color:#c0392b}
@@ -705,9 +715,10 @@ const TC_RRSS={
   historia:{label:'Historia',color:'#3c3028',bg:'#ede8e0',border:'#8c7a68'},
 };
 const SC={
-  pendiente:{label:'Pendiente',bg:'#f5f0e8',color:'#6b5f4e',bc:'rgba(201,168,76,.4)',next:'revision'},
-  revision:{label:'En revisión',bg:'#fffbeb',color:'#92400e',bc:'#fcd34d',next:'aprobado'},
-  aprobado:{label:'✓ Aprobado',bg:'#f0fdf4',color:'#166534',bc:'#86efac',next:'pendiente'},
+  pendiente:  {label:'⬜ Pendiente de diseño', bg:'#f5f0e8',color:'#6b5f4e',bc:'rgba(201,168,76,.35)'},
+  revision:   {label:'🔵 Enviado a revisión',  bg:'#eff6ff',color:'#1d4ed8',bc:'#93c5fd'},
+  cambios:    {label:'🟠 Solicitud de cambios',bg:'#fff7ed',color:'#c2410c',bc:'#fdba74'},
+  aprobado:   {label:'✅ Aprobado',            bg:'#f0fdf4',color:'#166534',bc:'#86efac'},
 };
 const ADD_TYPES_RRSS=[
   {type:'reel',label:'Reel',dot:'#c9a84c'},
@@ -867,7 +878,7 @@ function buildDefaultRRSS(){
   const s={};
   for(const m of MONTHS){
     s[m.key]=PLAN_RRSS[m.key].map(w=>({
-      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',correcciones:[]})),
+      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',revisionNum:0,correcciones:[]})),
       customIg:[],
     }));
   }
@@ -995,28 +1006,27 @@ function DeleteModal({titulo,onConfirm,onCancel}){
 
 // ── CONFIRM ROW COMPONENT ─────────────────────────────────────────────
 function ConfirmRow({confirming,nameInput,setNameInput,onConfirm,onCancel}){
-  const isAgencia=confirming==='revision'||confirming==='devuelto';
+  const isAgencia=confirming==='enviar_revision'||confirming==='reset_pendiente';
   const[revNum,setRevNum]=useState('');
-  const labels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve?'};
-  const cls=confirming==='devuelto'?'revision':confirming;
-  const canConfirm=nameInput.trim()&&(confirming!=='revision'||revNum);
+  const labels={
+    enviar_revision:'📤 ¿Quién lo envía a revisión? (agencia)',
+    aprobar:'✅ ¿Quién aprueba? (nombre del cliente)',
+    pedir_cambios:'🟠 ¿Quién solicita los cambios? (nombre del cliente)',
+    reset_pendiente:'↩️ ¿Quién lo devuelve a pendiente? (agencia)',
+  };
+  const cls={enviar_revision:'revision',aprobar:'aprobado',pedir_cambios:'revision',reset_pendiente:'revision'}[confirming]||'revision';
+  const canConfirm=nameInput.trim()&&(confirming!=='enviar_revision'||revNum);
 
   function handleConfirm(){
     if(!canConfirm)return;
-    // Pass revision number via nameInput augmentation when revision
-    if(confirming==='revision'&&revNum){
-      onConfirm(revNum);
-    } else {
-      onConfirm();
-    }
+    onConfirm(revNum);
     setRevNum('');
   }
 
   return React.createElement('div',{className:'confirm-row '+cls},
     React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:8,flex:1}},
-      React.createElement('span',{className:'confirm-label '+cls},labels[confirming]),
-      // REVISION NUMBER — only for revision action
-      confirming==='revision'&&React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:4}},
+      React.createElement('span',{className:'confirm-label '+cls},labels[confirming]||confirming),
+      confirming==='enviar_revision'&&React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:4}},
         React.createElement('span',{style:{fontSize:10,fontWeight:700,color:'#8b6914',letterSpacing:'.08em',textTransform:'uppercase'}},'Número de revisión'),
         React.createElement('div',{className:'name-selector'},
           ['1ª revisión','2ª revisión','3ª revisión'].map(function(n){
@@ -1027,7 +1037,6 @@ function ConfirmRow({confirming,nameInput,setNameInput,onConfirm,onCancel}){
           })
         )
       ),
-      // NAME SELECTOR (agencia) or free text (cliente)
       isAgencia
         ?React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:4}},
             React.createElement('span',{style:{fontSize:10,fontWeight:700,color:'#8b6914',letterSpacing:'.08em',textTransform:'uppercase'}},'Tu nombre'),
@@ -1157,80 +1166,62 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
   function toggleCorreccion(id){onUpdate('correcciones',correcciones.map(function(c){return c.id===id?{...c,done:!c.done}:c;}));}
   function deleteCorreccion(id){onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));}
 
-  function handleStatusClick(){
-    if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
-    else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
-    else{setConfirming('revision');setNameInput('');}
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
   }
   function handleConfirm(revNum){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    const accionLabel=confirming==='revision'?('📤 Enviado a '+(revNum||'revisión')):confirming;
+    const revLabel=revNum?(' — '+revNum):'';
+    const accionLabel={enviar_revision:'📤 Enviado a revisión'+revLabel,aprobar:'✅ Aprobado',pedir_cambios:'🟠 Solicitud de cambios'}[confirming]||confirming;
     const hist=[...historial,{accion:accionLabel,nombre:name,fecha:now}];
     onUpdate('historial',hist);
-    if(confirming==='revision'){
-      onUpdate('status','revision'); onUpdate('revisionBy',name+(revNum?' ('+revNum+')':'')); onUpdate('revisionAt',now);
+    if(confirming==='enviar_revision'){
+      onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);
       sendEmail('rrss','revision',name,now,(revNum?'['+revNum+'] ':' ')+(data.topic||'Post RRSS'));
-    } else if(confirming==='aprobado'){
-      onUpdate('status','aprobado'); onUpdate('approvedBy',name); onUpdate('approvedAt',now);
-      onApprove();
-      sendEmail('rrss','aprobado',name,now,data.topic||'Post RRSS');
-    } else if(confirming==='devuelto'){
-      onUpdate('status','revision'); onUpdate('revisionBy',name); onUpdate('revisionAt',now);
-      sendEmail('rrss','devolucion',name,now,data.topic||'Post RRSS');
+    } else if(confirming==='aprobar'){
+      onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);
+      onApprove();sendEmail('rrss','aprobado',name,now,data.topic||'Post RRSS');
+    } else if(confirming==='pedir_cambios'){
+      onUpdate('status','cambios');onUpdate('revisionBy',name);onUpdate('revisionAt',now);
+      sendEmail('rrss','revision',name,now,'[Cambios] '+(data.topic||'Post RRSS'));
     }
-    setConfirming(null); setNameInput('');
+    else if(confirming==='reset_pendiente'){
+      onUpdate('status','pendiente');
+    }
+    setConfirming(null);setNameInput('');
   }
 
   const isApproved=data.status==='aprobado';
-  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba este post?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+  const isCambios=data.status==='cambios';
 
-  return React.createElement('div',{className:'card'+(isApproved?' approved':''),style:{borderLeftColor:isApproved?'#22c55e':t.border}},
+  return React.createElement('div',{className:'card'+(isApproved?' approved':'')+(isCambios?' cambios':''),style:{borderLeftColor:isApproved?'#22c55e':isCambios?'#f97316':t.border}},
+    // CARD TOP — solo tipo, estado y borrar
     React.createElement('div',{className:'card-top'},
       React.createElement('div',{className:'card-badges'},
         React.createElement('span',{className:'type-badge',style:{color:t.color,background:t.bg}},t.label),
         pillar&&React.createElement('span',{className:'pillar-tag'},pillar)
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
-        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        React.createElement('select',{
+          className:'st-select',
+          value:data.status||'pendiente',
+          onChange:function(e){selectStatus(e.target.value);}
+        },
+          React.createElement('option',{value:'pendiente'},'⬜ Pendiente de diseño'),
+          React.createElement('option',{value:'revision'},'🔵 Enviado a revisión'),
+          React.createElement('option',{value:'cambios'},'🟠 Solicitud de cambios'),
+          React.createElement('option',{value:'aprobado'},'✅ Aprobado')
+        ),
         onDelete&&React.createElement('button',{className:'del-btn',title:'Borrar',onClick:function(){setShowDel(true);}},'🗑️')
       )
     ),
     showDel&&onDelete&&React.createElement(DeleteModal,{titulo:data.topic||'Post RRSS',onConfirm:function(n){onDelete();setShowDel(false);},onCancel:function(){setShowDel(false);}}),
-    // HISTORIAL
-    historial.length>0&&React.createElement('div',{className:'historial-block'},
-      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
-        histOpen?'▾':'▸',' 📋 Historial de cambios',
-        React.createElement('span',{className:'historial-count'},historial.length)
-      ),
-      histOpen&&React.createElement('div',{className:'historial-list'},
-        historial.map(function(h,i){
-          const icons={revision:'📤',aprobado:'✅',devuelto:'↩️'};
-          return React.createElement('div',{key:i,className:'historial-item'},
-            React.createElement('span',{className:'historial-icon'},icons[h.accion]||'•'),
-            React.createElement('span',{className:'historial-text'},
-              React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha
-            )
-          );
-        })
-      )
-    ),
-    // SEND TO CLIENT
-    data.status==='revision'&&React.createElement(SendToClientBlock,{seccion:'rrss',titulo:data.topic||'Post RRSS'}),
-    // REGISTRY
-    (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
-      data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},
-        React.createElement('span',{className:'reg-icon'},'📤'),
-        'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt
-      ),
-      data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},
-        React.createElement('span',{className:'reg-icon'},'✅'),
-        'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt
-      )
-    ),
-    // INLINE CONFIRM
-    confirming&&React.createElement(ConfirmRow,{confirming,nameInput,setNameInput,onConfirm:handleConfirm,onCancel:function(){setConfirming(null);setNameInput('');}}),
+    // CONTENIDO
     React.createElement('div',null,
       React.createElement('label',{className:'field-label'},'Tema'),
       React.createElement('input',{className:'topic-input',type:'text',value:data.topic,onChange:e=>onUpdate('topic',e.target.value),placeholder:'Escribe o edita el tema del post...'})
@@ -1249,6 +1240,7 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       React.createElement('div',{className:'design-link-label'},'Enlace al diseño'),
       React.createElement(UrlInput,{value:data.link,onChange:v=>onUpdate('link',v),placeholder:'https://drive.google.com/...',variant:'rrss'})
     ),
+    // CORRECCIONES DEL CLIENTE
     React.createElement('div',{className:'corr-section'},
       React.createElement('div',{className:'corr-header'},
         React.createElement('span',{className:'corr-title'},'✏️ Correcciones del cliente'),
@@ -1257,8 +1249,11 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       ),
       correcciones.map(function(c){
         return React.createElement('div',{key:c.id,className:'corr-item'+(c.done?' done':'')},
-          React.createElement('div',{className:'corr-check',onClick:function(){toggleCorreccion(c.id);}},c.done?'✓':''),
-          React.createElement('div',{className:'corr-text'},c.texto),
+          React.createElement('button',{className:'corr-check-btn'+(c.done?' done':''),onClick:function(){toggleCorreccion(c.id);}},c.done?'✓ Hecho':'Hecho'),
+          React.createElement('div',{className:'corr-text'},
+            c.texto,
+            c.creadaAt&&React.createElement('span',{className:'corr-fecha'},c.creadaAt)
+          ),
           React.createElement('button',{className:'corr-del',onClick:function(){deleteCorreccion(c.id);}  },'✕')
         );
       }),
@@ -1270,6 +1265,39 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
         React.createElement('button',{className:'corr-add-btn',onClick:addCorreccion},'+ Añadir')
       )
     ),
+    // HISTORIAL — debajo de correcciones
+    historial.length>0&&React.createElement('div',{className:'historial-block'},
+      React.createElement('button',{className:'historial-toggle',onClick:function(){setHistOpen(function(o){return !o;});}},
+        histOpen?'▾':'▸',' 📋 Historial de cambios',
+        React.createElement('span',{className:'historial-count'},historial.length)
+      ),
+      histOpen&&React.createElement('div',{className:'historial-list'},
+        historial.map(function(h,i){
+          const icons={revision:'📤',aprobado:'✅',devuelto:'↩️'};
+          return React.createElement('div',{key:i,className:'historial-item'},
+            React.createElement('span',{className:'historial-icon'},icons[h.accion]||'•'),
+            React.createElement('span',{className:'historial-text'},
+              React.createElement('strong',null,h.nombre),' — ',h.accion,' · ',h.fecha
+            )
+          );
+        })
+      )
+    ),
+    // SEND TO CLIENT — debajo de correcciones
+    data.status==='revision'&&React.createElement(SendToClientBlock,{seccion:'rrss',titulo:data.topic||'Post RRSS'}),
+    // REGISTRY — debajo de correcciones
+    (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
+      data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},
+        React.createElement('span',{className:'reg-icon'},'📤'),
+        'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt
+      ),
+      data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},
+        React.createElement('span',{className:'reg-icon'},'✅'),
+        'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt
+      )
+    ),
+    // CONFIRM ROW — debajo de correcciones
+    confirming&&React.createElement(ConfirmRow,{confirming,nameInput,setNameInput,onConfirm:handleConfirm,onCancel:function(){setConfirming(null);setNameInput('');}}),
     React.createElement('div',{className:'fields-stack'},
       React.createElement('div',null,
         React.createElement('label',{className:'field-label'},'Día de publicación'),
@@ -1325,24 +1353,48 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
   const[showDel,setShowDel]=useState(false);
   const historial=data.historial||[];
 
-  function handleStatusClick(){
-    if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
-    else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
-    else{setConfirming('revision');setNameInput('');}
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
+  }
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
   }
   function handleConfirm(revNum){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    const accionLabel=confirming==='revision'?('📤 Enviado a '+(revNum||'revisión')):confirming;
+    const revLabel=revNum?(' — '+revNum):'';
+    const accionLabel={
+      enviar_revision:'📤 Enviado a revisión'+revLabel,
+      aprobar:'✅ Aprobado',
+      pedir_cambios:'🟠 Solicitud de cambios',
+    }[confirming]||confirming;
     const hist=[...historial,{accion:accionLabel,nombre:name,fecha:now}];
     onUpdate('historial',hist);
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);sendEmail('seo','revision',name,now,(revNum?'['+revNum+'] ':' ')+(data.title||'Artículo SEO'));}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('seo','aprobado',name,now,data.title||'Artículo SEO');}
-    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('seo','devolucion',name,now,data.title||'Artículo SEO');}
+    if(confirming==='enviar_revision'){
+      onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);
+      sendEmail('seo','revision',name,now,(revNum?'['+revNum+'] ':'')+(data.title||'Artículo SEO'||''));
+    } else if(confirming==='aprobar'){
+      onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);
+      onApprove();
+      sendEmail('seo','aprobado',name,now,data.title||'Artículo SEO'||'');
+    } else if(confirming==='pedir_cambios'){
+      onUpdate('status','cambios');onUpdate('revisionBy',name);onUpdate('revisionAt',now);
+      sendEmail('seo','revision',name,now,'[Cambios] '+(data.title||'Artículo SEO'||''));
+    }
+    else if(confirming==='reset_pendiente'){
+      onUpdate('status','pendiente');
+    }
     setConfirming(null);setNameInput('');
   }
-  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+
   return React.createElement('div',{className:'seo-card'+(data.status==='aprobado'?' approved':'')},
     React.createElement('div',{className:'card-top'},
       React.createElement('div',{className:'card-badges'},
@@ -1350,7 +1402,16 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
         data.kw&&React.createElement('span',{className:'pillar-tag',style:{color:'#2c8e8a'}},'🔑 '+data.kw)
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
-        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        React.createElement('select',{
+          className:'st-select',
+          value:data.status||'pendiente',
+          onChange:function(e){selectStatus(e.target.value);}
+        },
+          React.createElement('option',{value:'pendiente'},'⬜ Pendiente de diseño'),
+          React.createElement('option',{value:'revision'},'🔵 Enviado a revisión'),
+          React.createElement('option',{value:'cambios'},'🟠 Solicitud de cambios'),
+          React.createElement('option',{value:'aprobado'},'✅ Aprobado')
+        ),
         onDelete&&React.createElement('button',{className:'del-btn',title:'Borrar',onClick:function(){setShowDel(true);}},'🗑️')
       )
     ),
@@ -1457,8 +1518,11 @@ function PubCorrecciones({data,onUpdate}){
     ),
     correcciones.map(function(c){
       return React.createElement('div',{key:c.id,className:'corr-item'+(c.done?' done':'')},
-        React.createElement('div',{className:'corr-check',onClick:function(){toggle(c.id);}},c.done?'✓':''),
-        React.createElement('div',{className:'corr-text'},c.texto),
+        React.createElement('button',{className:'corr-check-btn'+(c.done?' done':''),onClick:function(){toggle(c.id);}},c.done?'✓ Hecho':'Hecho'),
+        React.createElement('div',{className:'corr-text'},
+          c.texto,
+          c.creadaAt&&React.createElement('span',{className:'corr-fecha'},c.creadaAt)
+        ),
         React.createElement('button',{className:'corr-del',onClick:function(){del(c.id);}  },'✕')
       );
     }),
@@ -1564,24 +1628,48 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
   const[showDel,setShowDel]=useState(false);
   const historial=data.historial||[];
 
-  function handleStatusClick(){
-    if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
-    else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
-    else{setConfirming('revision');setNameInput('');}
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
+  }
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
   }
   function handleConfirm(revNum){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    const accionLabel=confirming==='revision'?('📤 Enviado a '+(revNum||'revisión')):confirming;
+    const revLabel=revNum?(' — '+revNum):'';
+    const accionLabel={
+      enviar_revision:'📤 Enviado a revisión'+revLabel,
+      aprobar:'✅ Aprobado',
+      pedir_cambios:'🟠 Solicitud de cambios',
+    }[confirming]||confirming;
     const hist=[...historial,{accion:accionLabel,nombre:name,fecha:now}];
     onUpdate('historial',hist);
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);sendEmail('pub','revision',name,now,(revNum?'['+revNum+'] ':' ')+(data.name||'Campaña'));}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('pub','aprobado',name,now,data.name||'Campaña');}
-    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('pub','devolucion',name,now,data.name||'Campaña');}
+    if(confirming==='enviar_revision'){
+      onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);
+      sendEmail('pub','revision',name,now,(revNum?'['+revNum+'] ':'')+(data.name||'Campaña'||''));
+    } else if(confirming==='aprobar'){
+      onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);
+      onApprove();
+      sendEmail('pub','aprobado',name,now,data.name||'Campaña'||'');
+    } else if(confirming==='pedir_cambios'){
+      onUpdate('status','cambios');onUpdate('revisionBy',name);onUpdate('revisionAt',now);
+      sendEmail('pub','revision',name,now,'[Cambios] '+(data.name||'Campaña'||''));
+    }
+    else if(confirming==='reset_pendiente'){
+      onUpdate('status','pendiente');
+    }
     setConfirming(null);setNameInput('');
   }
-  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+
   const platClass=data.platform||'otras';
   return React.createElement('div',{className:'pub-card'+(data.status==='aprobado'?' approved':'')},
     React.createElement('div',{className:'card-top'},
@@ -1592,7 +1680,16 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
         )
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
-        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        React.createElement('select',{
+          className:'st-select',
+          value:data.status||'pendiente',
+          onChange:function(e){selectStatus(e.target.value);}
+        },
+          React.createElement('option',{value:'pendiente'},'⬜ Pendiente de diseño'),
+          React.createElement('option',{value:'revision'},'🔵 Enviado a revisión'),
+          React.createElement('option',{value:'cambios'},'🟠 Solicitud de cambios'),
+          React.createElement('option',{value:'aprobado'},'✅ Aprobado')
+        ),
         onDelete&&React.createElement('button',{className:'del-btn',title:'Borrar',onClick:function(){setShowDel(true);}},'🗑️')
       )
     ),
@@ -1794,24 +1891,48 @@ function MediosArticleCard({data,idx,onUpdate,onDelete,onApprove}){
   const historial=data.historial||[];
 
   function setFoto(i){onUpdate('fotoSeleccionada',i);}
-  function handleStatusClick(){
-    if(data.status==='pendiente'){setConfirming('revision');setNameInput('');}
-    else if(data.status==='revision'){setConfirming('aprobado');setNameInput('');}
-    else if(data.status==='aprobado'){setConfirming('devuelto');setNameInput('');}
-    else{setConfirming('revision');setNameInput('');}
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
+  }
+  function selectStatus(val){
+    if(val===data.status)return;
+    if(val==='revision'){setConfirming('enviar_revision');setNameInput('');}
+    else if(val==='aprobado'){setConfirming('aprobar');setNameInput('');}
+    else if(val==='cambios'){setConfirming('pedir_cambios');setNameInput('');}
+    else if(val==='pendiente'){setConfirming('reset_pendiente');setNameInput('');}
   }
   function handleConfirm(revNum){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    const accionLabel=confirming==='revision'?('📤 Enviado a '+(revNum||'revisión')):confirming;
+    const revLabel=revNum?(' — '+revNum):'';
+    const accionLabel={
+      enviar_revision:'📤 Enviado a revisión'+revLabel,
+      aprobar:'✅ Aprobado',
+      pedir_cambios:'🟠 Solicitud de cambios',
+    }[confirming]||confirming;
     const hist=[...historial,{accion:accionLabel,nombre:name,fecha:now}];
     onUpdate('historial',hist);
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);sendEmail('medios','revision',name,now,(revNum?'['+revNum+'] ':' ')+(data.titular||'Artículo Medios'));}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);if(onApprove)onApprove();sendEmail('medios','aprobado',name,now,data.titular||'Artículo Medios');}
-    else if(confirming==='devuelto'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('medios','devolucion',name,now,data.titular||'Artículo Medios');}
+    if(confirming==='enviar_revision'){
+      onUpdate('status','revision');onUpdate('revisionBy',name+(revNum?' ('+revNum+')':''));onUpdate('revisionAt',now);
+      sendEmail('medios','revision',name,now,(revNum?'['+revNum+'] ':'')+(data.titular||'Artículo Medios'||''));
+    } else if(confirming==='aprobar'){
+      onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);
+      onApprove();
+      sendEmail('medios','aprobado',name,now,data.titular||'Artículo Medios'||'');
+    } else if(confirming==='pedir_cambios'){
+      onUpdate('status','cambios');onUpdate('revisionBy',name);onUpdate('revisionAt',now);
+      sendEmail('medios','revision',name,now,'[Cambios] '+(data.titular||'Artículo Medios'||''));
+    }
+    else if(confirming==='reset_pendiente'){
+      onUpdate('status','pendiente');
+    }
     setConfirming(null);setNameInput('');
   }
-  const confirmLabels={revision:'📤 ¿Quién lo envía a revisión?',aprobado:'✅ ¿Quién aprueba?',devuelto:'↩️ ¿Quién lo devuelve a revisión?'};
+
 
   return React.createElement('div',{className:'medios-card'},
     React.createElement('div',{className:'medios-card-hdr'},
@@ -1823,7 +1944,16 @@ function MediosArticleCard({data,idx,onUpdate,onDelete,onApprove}){
         React.createElement('span',{style:{fontSize:11,color:'#a5b4fc',letterSpacing:'.06em'}},(data.titular||'Sin titular')+(open?'  ▲':'  ▼'))
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
-        React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
+        React.createElement('select',{
+          className:'st-select',
+          value:data.status||'pendiente',
+          onChange:function(e){selectStatus(e.target.value);}
+        },
+          React.createElement('option',{value:'pendiente'},'⬜ Pendiente de diseño'),
+          React.createElement('option',{value:'revision'},'🔵 Enviado a revisión'),
+          React.createElement('option',{value:'cambios'},'🟠 Solicitud de cambios'),
+          React.createElement('option',{value:'aprobado'},'✅ Aprobado')
+        ),
         onDelete&&React.createElement('button',{className:'del-btn',title:'Borrar',onClick:function(){setShowDel(true);}},'🗑️')
       )
     ),
@@ -3068,7 +3198,7 @@ function App(){
 
   // ── MEDIOS handlers
   const updateMediosArticle=useCallback(function(mk,i,f,v){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk][i][f]=v;return n;});  },[]);
-  const addMediosArticle=useCallback(function(mk){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk]=[...(n[mk]||[]),{id:Date.now(),titular:'',titular2:'',titular3:'',texto:'',keywords:'',contactoNombre:'',contactoTel:'',web:'',foto1:'',foto2:'',foto3:'',fotoSeleccionada:undefined,status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',historial:[]}];return n;});  },[]);
+  const addMediosArticle=useCallback(function(mk){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk]=[...(n[mk]||[]),{id:Date.now(),titular:'',titular2:'',titular3:'',texto:'',keywords:'',contactoNombre:'',contactoTel:'',web:'',foto1:'',foto2:'',foto3:'',fotoSeleccionada:undefined,status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',revisionNum:0,historial:[]}];return n;});  },[]);
   const deleteMediosArticle=useCallback(function(mk,i){setMedios(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk].splice(i,1);return n;});  },[]);
   const approveMedios=useCallback(function(mk,i){setPts(function(p){return p+5;});  },[]);
 
