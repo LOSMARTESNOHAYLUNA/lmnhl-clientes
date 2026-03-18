@@ -1184,9 +1184,10 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
         React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
-        onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+        onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDelete(true)},'🗑️')
       )
     ),
+    showDelete&&React.createElement(DeleteModal,{titulo:data.topic||'Post sin título',onCancel:()=>setShowDelete(false),onConfirm:function(){onDelete();setShowDelete(false);}}),
     // REGISTRY
     (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
       data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},
@@ -1335,7 +1336,7 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
   );
 }
 
-function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onUpdateCustom,onDeleteCustom,onApprove,defOpen}){
+function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onUpdateCustom,onDeleteCustom,onDeleteBase,onApprove,defOpen}){
   const[open,setOpen]=useState(defOpen);
   const all=[...dataWeek.ig,...(dataWeek.customIg||[])];
   const apr=all.filter(d=>d.status==='aprobado').length;
@@ -1360,7 +1361,7 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onU
         React.createElement('span',{className:'plat-count'},total+' publicaciones')
       ),
       React.createElement('div',{className:'posts-grid'},
-        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,seccion:'rrss',data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onApprove:()=>onApprove('ig',i)})),
+        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,seccion:'rrss',data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onDelete:()=>onDeleteBase(i),onApprove:()=>onApprove('ig',i)})),
         (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,seccion:'rrss',data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove:()=>onApprove('custom',i)}))
       ),
       React.createElement(AddButton,{onAdd:type=>onAddCustom('ig',type)})
@@ -1394,10 +1395,9 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
         React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
-        onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDeleteCamp(true)},'🗑️')
+        onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDeleteSeo(true)},'🗑️')
       )
     ),
-    showDeleteCamp&&React.createElement(DeleteModal,{titulo:data.name||'Campaña sin título',onCancel:()=>setShowDeleteCamp(false),onConfirm:function(n){onDelete();setShowDeleteCamp(false);}}),
     showDeleteSeo&&React.createElement(DeleteModal,{titulo:data.title||'Artículo sin título',onCancel:()=>setShowDeleteSeo(false),onConfirm:function(n){onDelete();setShowDeleteSeo(false);}}),
     (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
       data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},React.createElement('span',{className:'reg-icon'},'📤'),'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt),
@@ -1548,9 +1548,10 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
       ),
       React.createElement('div',{style:{display:'flex',gap:6,alignItems:'center'}},
         React.createElement('button',{className:'st-btn',style:{background:s.bg,color:s.color,borderColor:s.bc},onClick:handleStatusClick},s.label),
-        onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+        onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDeleteCamp(true)},'🗑️')
       )
     ),
+    showDeleteCamp&&React.createElement(DeleteModal,{titulo:data.name||'Campaña sin título',onCancel:()=>setShowDeleteCamp(false),onConfirm:function(){onDelete();setShowDeleteCamp(false);}}),
     (data.revisionBy||data.approvedBy)&&React.createElement('div',{className:'registry'},
       data.revisionBy&&React.createElement('div',{className:'reg-tag rev'},React.createElement('span',{className:'reg-icon'},'📤'),'Enviado a revisión por ',React.createElement('strong',null,data.revisionBy),' · ',data.revisionAt),
       data.approvedBy&&React.createElement('div',{className:'reg-tag apr'},React.createElement('span',{className:'reg-icon'},'✅'),'Aprobado por ',React.createElement('strong',null,data.approvedBy),' · ',data.approvedAt)
@@ -1842,9 +1843,10 @@ function MediosArticleCard({data,idx,onUpdate,onDelete}){
           style:{background:sc.bg,color:sc.color,borderColor:sc.bc},
           onClick:handleStatusClick
         },sc.label),
-        onDelete&&React.createElement('button',{className:'del-btn',onClick:onDelete},'✕')
+        onDelete&&React.createElement('button',{className:'del-btn',style:{fontSize:14},onClick:()=>setShowDeleteMedios(true)},'🗑️')
             ),
     ),
+    showDeleteMedios&&React.createElement(DeleteModal,{titulo:data.titular||'Artículo sin titular',onCancel:()=>setShowDeleteMedios(false),onConfirm:function(){onDelete();setShowDeleteMedios(false);}}),
     confirming&&React.createElement('div',{className:'confirm-row '+confirming},
       React.createElement('span',{className:'confirm-label '+confirming},
         confirming==='revision'?'📤 ¿Quién lo envía a revisión?':confirming==='devolucion'?'🔄 ¿Quién lo devuelve a revisión?':'✅ ¿Quién aprueba este artículo?'
@@ -3064,6 +3066,9 @@ function App(){
   const deleteCustomRRSS=useCallback((mk,wi,plat,ci)=>{
     setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk][wi].customIg.splice(ci,1);return n;});
   },[]);
+  const deleteBaseRRSS=useCallback((mk,wi,pi)=>{
+    setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk][wi].ig.splice(pi,1);return n;});
+  },[]);
   const approveRRSS=useCallback((mk,wi,plat,pi,isCustom)=>{
     doApprove();
     setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));
@@ -3242,6 +3247,7 @@ function App(){
         onAddCustom:(plat,type)=>addCustomRRSS(month,wi,plat,type),
         onUpdateCustom:(plat,ci,f,v)=>updateCustomRRSS(month,wi,plat,ci,f,v),
         onDeleteCustom:(plat,ci)=>deleteCustomRRSS(month,wi,plat,ci),
+        onDeleteBase:(pi)=>deleteBaseRRSS(month,wi,pi),
         onApprove:(plat,pi)=>approveRRSS(month,wi,plat==='custom'?'customIg':plat,pi,plat==='custom'),
         defOpen:wi===0,
       })),
