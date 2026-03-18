@@ -787,7 +787,7 @@ const TC_RRSS={
   historia:{label:'Historia',color:'#3c3028',bg:'#ede8e0',border:'#8C7A9C'},
   imagen:{label:'Post imagen',color:'#0e6b8f',bg:'#e0f4fb',border:'#0ea5c9'},
 };
-const AGENCIA_NOMBRES=['Juli','Estefanía','Jessy','Paola','Sheila','Carla','Elena','Matías'];
+const AGENCIA_NOMBRES=['Juli','Estefanía','Jessy','Paola','Sheila','Carla','Elena','Matías','Laura'];
 
 const SC={
   pendiente:{label:'⬜ Pendiente',bg:'#F5F0FF',color:'#4C3A6B',bc:'rgba(124,58,237,.4)'},
@@ -1135,8 +1135,19 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
     setNewCorr('');
   }
   function toggleCorreccion(id){
+    const corr=correcciones.find(function(c){return c.id===id;});
     const list=correcciones.map(function(c){return c.id===id?{...c,done:!c.done}:c;});
     onUpdate('correcciones',list);
+    // Al marcar como Hecho → auto-set a revisión y abrir acordeón de aviso al cliente
+    if(corr&&!corr.done){
+      if(data.status!=='revision'){
+        onUpdate('status','revision');
+        const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        const nuevoHistorial=[...(data.historial||[]),{accion:'revision',nombre:'Corrección aplicada (auto)',fecha:now}];
+        onUpdate('historial',nuevoHistorial);
+      }
+      setEnviarOpen(true);
+    }
   }
   function deleteCorreccion(id){
     onUpdate('correcciones',correcciones.filter(function(c){return c.id!==id;}));
