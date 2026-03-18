@@ -604,6 +604,17 @@ async function sbSave(data){
     });
   }catch(e){}
 }
+
+const EMAIL_FN='https://kbfipabrgwmqethkczvi.supabase.co/functions/v1/dynamic-api';
+async function sendEmail(seccion,accion,nombre,fecha,titulo){
+  try{
+    await fetch(EMAIL_FN,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({seccion,accion,nombre,fecha,titulo})
+    });
+  }catch(e){}
+}
 // ── MIGRATION: strip old default hashtags from saved data ──
 (function(){
   var badHashtags=['#FabricaDeSonrisas #ClínicaDental #OdontologíaGranada','#DocrysDC #DiseñoDeInteriores #InteriorismoMadrid'];
@@ -875,7 +886,7 @@ function AddButton({onAdd,variant}){
   );
 }
 
-function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
+function PostCard({planCfg,data,onUpdate,onDelete,onApprove,seccion}){
   const type=planCfg?planCfg.type:(data.type||'reel');
   const t=TC_RRSS[type]||TC_RRSS.reel;
   const s=SC[data.status]||SC.pendiente;
@@ -918,12 +929,14 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       onUpdate('revisionBy',name);
       onUpdate('revisionAt',now);
       onUpdate('historial',nuevoHistorial);
+      sendEmail(seccion||'rrss','revision',name,now,data.topic||'Post sin título');
     } else if(confirming==='aprobado'){
       onUpdate('status','aprobado');
       onUpdate('approvedBy',name);
       onUpdate('approvedAt',now);
       onUpdate('historial',nuevoHistorial);
       onApprove();
+      sendEmail(seccion||'rrss','aprobado',name,now,data.topic||'Post sin título');
     } else if(confirming==='devolucion'){
       onUpdate('status','revision');
       onUpdate('revisionBy',name);
@@ -931,6 +944,7 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
       onUpdate('approvedBy','');
       onUpdate('approvedAt','');
       onUpdate('historial',nuevoHistorial);
+      sendEmail(seccion||'rrss','devolucion',name,now,data.topic||'Post sin título');
     }
     setConfirming(null);setNameInput('');
   }
@@ -1069,8 +1083,8 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onU
         React.createElement('span',{className:'plat-count'},total+' publicaciones')
       ),
       React.createElement('div',{className:'posts-grid'},
-        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onApprove:()=>onApprove('ig',i)})),
-        (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove:()=>onApprove('custom',i)}))
+        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,seccion:'rrss',data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onApprove:()=>onApprove('ig',i)})),
+        (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,seccion:'rrss',data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove:()=>onApprove('custom',i)}))
       ),
       React.createElement(AddButton,{onAdd:type=>onAddCustom('ig',type)})
     )
@@ -1090,8 +1104,8 @@ function SEOArticleCard({data,onUpdate,onDelete,onApprove}){
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();}
+    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('seo','revision',name,now,data.title||'Artículo sin título');}
+    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('seo','aprobado',name,now,data.title||'Artículo sin título');}
     setConfirming(null);setNameInput('');
   }
   return React.createElement('div',{className:'seo-card'+(data.status==='aprobado'?' approved':'')},
@@ -1182,8 +1196,8 @@ function CampaignCard({data,onUpdate,onDelete,onApprove}){
   function handleConfirm(){
     const now=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const name=nameInput.trim()||'Sin nombre';
-    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);}
-    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();}
+    if(confirming==='revision'){onUpdate('status','revision');onUpdate('revisionBy',name);onUpdate('revisionAt',now);sendEmail('pub','revision',name,now,data.nombre||'Campaña sin título');}
+    else if(confirming==='aprobado'){onUpdate('status','aprobado');onUpdate('approvedBy',name);onUpdate('approvedAt',now);onApprove();sendEmail('pub','aprobado',name,now,data.nombre||'Campaña sin título');}
     setConfirming(null);setNameInput('');
   }
   const platClass=data.platform||'otras';
