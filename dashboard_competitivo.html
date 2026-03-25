@@ -148,6 +148,23 @@ tr:hover td{background:var(--light);}
   .rec-card{grid-template-columns:1fr;gap:.6rem;}
   .section{padding:1.5rem 1rem;}
 }
+
+/* ── KEY MODAL ── */
+#key-modal{position:fixed;inset:0;background:rgba(26,18,40,.7);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem;}
+#key-modal.open{display:flex;}
+.km-card{background:#fff;border-top:4px solid #582D81;padding:2rem 2.4rem;max-width:440px;width:100%;}
+.km-logo{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#582D81;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem;}
+.km-logo::before{content:'';width:12px;height:2px;background:#582D81;display:inline-block;}
+.km-card h2{font-size:1.1rem;font-weight:800;color:#582D81;letter-spacing:-.02em;margin-bottom:.3rem;}
+.km-card p{font-size:.75rem;color:#7a6f85;font-weight:300;line-height:1.6;margin-bottom:1.2rem;}
+.km-input-wrap{display:flex;gap:.5rem;margin-bottom:.6rem;}
+.km-input{flex:1;padding:.75rem .9rem;border:1px solid #e8e4f0;background:#f7f6f3;font-family:monospace;font-size:.8rem;color:#1a1228;outline:none;transition:border-color .2s;}
+.km-input:focus{border-color:#582D81;}
+.km-eye{padding:.75rem .9rem;border:1px solid #e8e4f0;background:#f7f6f3;font-family:'Poppins',sans-serif;font-size:.65rem;font-weight:600;color:#7a6f85;cursor:pointer;white-space:nowrap;}
+.km-err{font-size:.72rem;color:#991b1b;margin-bottom:.8rem;display:none;}
+.km-btn{width:100%;padding:.85rem;background:#582D81;color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background .2s;}
+.km-btn:hover{background:#6e3d9a;}
+.km-note{font-size:.62rem;color:#7a6f85;margin-top:.7rem;font-weight:300;text-align:center;}
 </style>
 </head>
 <body>
@@ -365,9 +382,11 @@ async function startAnalysis(){
   const c1=document.getElementById('f-c1').value;
   const c2=document.getElementById('f-c2').value;
   const c3=document.getElementById('f-c3').value;
+  const apikey=window._sessionKey||'';
   const errEl=document.getElementById('form-err');
   errEl.style.display='none';
 
+  if(!apikey||!apikey.startsWith('sk-ant-')){showKeyModal(function(){startAnalysis();});return;}
   if(!url||!loc||!pub){errEl.textContent='Por favor, completa URL, localidad y público objetivo.';errEl.style.display='block';return;}
 
   document.getElementById('form-page').style.display='none';
@@ -455,7 +474,7 @@ RESPONDE ÚNICAMENTE con un objeto JSON válido, sin markdown, sin texto adicion
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':apikey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:4000,
@@ -717,6 +736,52 @@ function hexAlpha(hex,alpha){
   const b=parseInt(hex.slice(5,7),16);
   return `rgba(${r},${g},${b},${alpha})`;
 }
+
+
+</script>
+
+
+<!-- ── KEY MODAL ── -->
+<div id="key-modal">
+  <div class="km-card">
+    <div class="km-logo">Análisis Competitivo · LMNHL</div>
+    <h2>Introduce tu API Key</h2>
+    <p>Necesaria para lanzar el análisis con IA. Solo se usa durante esta sesión y no se guarda en ningún sitio.</p>
+    <div class="km-input-wrap">
+      <input class="km-input" type="password" id="km-key" placeholder="sk-ant-api03-...">
+      <button class="km-eye" id="km-eye" onclick="kmToggle()">Ver</button>
+    </div>
+    <div class="km-err" id="km-err">La key debe empezar por sk-ant-</div>
+    <button class="km-btn" onclick="kmConfirm()">Continuar con el análisis →</button>
+    <p class="km-note">Consíguela en <a href="https://console.anthropic.com" target="_blank" style="color:#582D81;">console.anthropic.com</a> → API Keys</p>
+  </div>
+</div>
+<script>
+var _kmCallback=null;
+function showKeyModal(cb){
+  _kmCallback=cb||null;
+  document.getElementById('key-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('km-key').focus(),100);
+}
+function kmToggle(){
+  const inp=document.getElementById('km-key');
+  const btn=document.getElementById('km-eye');
+  if(inp.type==='password'){inp.type='text';btn.textContent='Ocultar';}
+  else{inp.type='password';btn.textContent='Ver';}
+}
+function kmConfirm(){
+  const k=document.getElementById('km-key').value.trim();
+  const err=document.getElementById('km-err');
+  if(!k||!k.startsWith('sk-ant-')){err.style.display='block';return;}
+  err.style.display='none';
+  window._sessionKey=k;
+  document.getElementById('key-modal').classList.remove('open');
+  document.getElementById('km-key').value='';
+  if(_kmCallback) _kmCallback();
+}
+document.getElementById('km-key').addEventListener('keydown',function(e){
+  if(e.key==='Enter') kmConfirm();
+});
 </script>
 </body>
 </html>
