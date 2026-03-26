@@ -165,6 +165,45 @@ tr:hover td{background:var(--light);}
 .km-btn{width:100%;padding:.85rem;background:#582D81;color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background .2s;}
 .km-btn:hover{background:#6e3d9a;}
 .km-note{font-size:.62rem;color:#7a6f85;margin-top:.7rem;font-weight:300;text-align:center;}
+
+/* ── SHARE PANEL ── */
+#share-panel{display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;background:#fff;border:1px solid var(--border);border-top:4px solid var(--brand2);padding:1.4rem 1.6rem;max-width:380px;width:calc(100% - 3rem);box-shadow:0 8px 32px rgba(26,18,40,.15);}
+.sp-title{font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--brand2);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.sp-title::before{content:'';width:10px;height:2px;background:var(--brand2);display:inline-block;}
+.sp-close{position:absolute;top:.7rem;right:.9rem;background:none;border:none;font-size:1rem;color:var(--muted);cursor:pointer;line-height:1;}
+.sp-label{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;}
+.sp-url-row{display:flex;gap:.4rem;margin-bottom:1rem;}
+.sp-url{flex:1;padding:.6rem .8rem;border:1px solid var(--border);background:var(--bg);font-family:monospace;font-size:.72rem;color:var(--text);outline:none;}
+.sp-url:focus{border-color:var(--brand);}
+.sp-copy{padding:.6rem .9rem;background:var(--brand);color:#fff;border:none;font-family:'Poppins',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.sp-copy:hover{background:#6e3d9a;}
+.sp-copy.copied{background:var(--brand2);}
+.sp-hint{font-size:.68rem;color:var(--muted);font-weight:300;line-height:1.5;}
+.sp-hint strong{color:var(--text);font-weight:600;}
+
+/* ── PRINT / PDF ── */
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  #form-page, #loading-page, #key-modal { display: none !important; }
+  .dash-nav { display: none !important; }
+  #dashboard-page { display: block !important; }
+  .section {
+    display: block !important;
+    padding: 1.2rem !important;
+    page-break-after: always;
+    break-after: page;
+    max-width: 100% !important;
+  }
+  .section:last-child { page-break-after: auto; break-after: auto; }
+  .section-h { font-size: 1.1rem !important; }
+  .chart-wrap { height: 300px !important; }
+  .cards-row { grid-template-columns: repeat(4,1fr) !important; }
+  .swot-grid { grid-template-columns: 1fr 1fr !important; }
+  table { font-size: .65rem !important; }
+  th, td { padding: .4rem .6rem !important; }
+  body { background: #fff !important; }
+  .share-panel { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -237,6 +276,7 @@ tr:hover td{background:var(--light);}
     <button class="tab-btn" onclick="showTab(4,this)">Posicionamiento</button>
     <button class="tab-btn" onclick="showTab(5,this)">Visibilidad</button>
     <button class="tab-btn" onclick="showTab(6,this)">Estrategia</button>
+    <button class="btn-reset" id="btn-pdf" onclick="printDashboard()" style="display:none;color:rgba(255,255,255,.7);border-color:rgba(135,178,41,.4);">&#8595; Descargar PDF</button>
     <button class="btn-reset" id="btn-export" onclick="exportHTML()" style="display:none;color:rgba(255,255,255,.7);border-color:rgba(135,178,41,.5);">&#8595; Exportar HTML</button>
     <button class="btn-reset" onclick="resetApp()">← Nuevo análisis</button>
   </nav>
@@ -658,6 +698,7 @@ function renderDashboard(d, c1, c2, c3){
   document.getElementById('loading-page').style.display='none';
   document.getElementById('dashboard-page').style.display='block';
   document.getElementById('btn-export').style.display='inline-block';
+  document.getElementById('btn-pdf').style.display='inline-block';
 }
 
 function buildBubble(allActors, empScores, comps, c1, COMP_COLORS){
@@ -784,6 +825,34 @@ function kmConfirm(){
 document.getElementById('km-key').addEventListener('keydown',function(e){
   if(e.key==='Enter') kmConfirm();
 });
+function printDashboard(){
+  // Show all sections, hide nav
+  const secs=document.querySelectorAll('.section');
+  const original=[];
+  secs.forEach(s=>{original.push(s.style.display);s.style.display='block';});
+  // Update all charts so they render correctly
+  if(radarChartObj) radarChartObj.update();
+  if(bubbleChartObj) bubbleChartObj.update();
+  if(donutChartObj) donutChartObj.update();
+  // Small delay so charts re-render before print dialog opens
+  setTimeout(()=>{
+    window.print();
+    // Restore after print dialog closes
+    secs.forEach((s,i)=>s.style.display=original[i]);
+  },400);
+}
+
+function copyShareUrl(){
+  const inp=document.getElementById('sp-url-input');
+  inp.select();
+  navigator.clipboard.writeText(inp.value).then(()=>{
+    const btn=document.getElementById('sp-copy-btn');
+    btn.textContent='¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied');},2000);
+  });
+}
+
 function exportHTML(){
   if(!DATA) return;
   const d=DATA.analysis;
@@ -861,6 +930,9 @@ tr:hover td{background:var(--light);}
 .leg-item{display:flex;align-items:center;gap:.4rem;font-size:.7rem;color:var(--muted);}
 .leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
 @media(max-width:680px){.swot-grid{grid-template-columns:1fr;}.section{padding:1.5rem 1rem;}.rec-card{grid-template-columns:1fr;gap:.6rem;}}
+@media print{.dash-nav{display:none!important;}.section{display:block!important;page-break-after:always;padding:1.5rem;}.section:last-child{page-break-after:auto;}body{background:#fff;}}
+
+@media print{@page{size:A4 landscape;margin:12mm;}.dash-nav{display:none!important;}.section{display:block!important;padding:1.2rem!important;page-break-after:always;break-after:page;max-width:100%!important;}.section:last-child{page-break-after:auto;}.chart-wrap{height:280px!important;}.cards-row{grid-template-columns:repeat(4,1fr)!important;}.swot-grid{grid-template-columns:1fr 1fr!important;}table{font-size:.65rem!important;}th,td{padding:.4rem .6rem!important;}body{background:#fff!important;}}
 <\/style>
 <\/head>
 <body>
@@ -874,6 +946,7 @@ tr:hover td{background:var(--light);}
   <button class="tab-btn" onclick="st(5,this)">Visibilidad<\/button>
   <button class="tab-btn" onclick="st(6,this)">Estrategia<\/button>
   <div class="nav-date">Generado el ${fecha}<\/div>
+  <button onclick="downloadPDF()" style="margin-left:.5rem;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);padding:.4rem .9rem;border:1px solid rgba(135,178,41,.5);background:none;cursor:pointer;font-family:Poppins,sans-serif;white-space:nowrap;flex-shrink:0;transition:color .2s;">&#8595; PDF<\/button>
 <\/nav>
 <div id="sec-0" class="section active"><div class="section-title">Sección 1<\/div><div class="section-h" id="s1-title"><\/div><div class="cards-row" id="s1-cards"><\/div><div class="chart-box"><h3>Información de la empresa analizada<\/h3><div id="s1-company"><\/div><\/div><\/div>
 <div id="sec-1" class="section"><div class="section-title">Sección 2<\/div><div class="section-h">Radar de posicionamiento competitivo<\/div><div class="legend" id="radar-legend"><\/div><div class="chart-box"><div class="chart-wrap" style="height:460px;"><canvas id="radarChart"><\/canvas><\/div><\/div><div style="font-size:.72rem;color:var(--muted);font-weight:300;">* Puntuaciones 1–10 estimadas a partir de análisis de presencia digital, reseñas, web, redes sociales y servicios publicados.<\/div><\/div>
@@ -916,19 +989,50 @@ window.addEventListener('load',function(){
   const pM={'alta':['tag-hi','Alta'],'media':['tag-med','Media'],'baja':['tag-lo','Baja']};
   document.getElementById('rec-grid').innerHTML=(d.recomendaciones||[]).map(r=>{const[pc,pl]=pM[r.prioridad]||['tag-med','—'];return '<div class="rec-card"><div class="rec-num">'+r.numero+'<\/div><div class="rec-body"><h4>'+r.accion+'<\/h4><p>'+r.descripcion+'<\/p><div class="rec-meta"><span class="rec-tag '+pc+'">Prioridad: '+pl+'<\/span><span class="rec-tag tag-time">&#9201; '+r.plazo+'<\/span><\/div><\/div><div class="rec-impact">&#8593; '+r.impacto+'<\/div><\/div>';}).join('');
 });
+
+function downloadPDF(){
+  const secs=document.querySelectorAll('.section');
+  const original=[];
+  secs.forEach(s=>{original.push(s.style.display);s.style.display='block';});
+  setTimeout(()=>{
+    window.print();
+    secs.forEach((s,i)=>s.style.display=original[i]);
+  },400);
+}
 <\/script>
 <\/body>
-<\/html>`;
+<\/html>\`;
 
   const nombre=d.empresa.nombre.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  const filename='analisis_competitivo_'+nombre+'_'+new Date().toISOString().slice(0,10)+'.html';
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='analisis_competitivo_'+nombre+'_'+new Date().toISOString().slice(0,10)+'.html';
+  a.download=filename;
   a.click();
   URL.revokeObjectURL(a.href);
+  // Show share panel
+  const baseUrl='https://clientes.losmartesnohayluna.com/'+nombre+'/';
+  document.getElementById('sp-url-input').value=baseUrl+filename;
+  document.getElementById('share-panel').style.display='block';
 }
 
 </script>
+
+<!-- ── SHARE PANEL ── -->
+<div id="share-panel">
+  <button class="sp-close" onclick="document.getElementById('share-panel').style.display='none'">✕</button>
+  <div class="sp-title">Archivo listo</div>
+  <div class="sp-label">Enlace para el portal del cliente</div>
+  <div class="sp-url-row">
+    <input class="sp-url" id="sp-url-input" type="text" readonly>
+    <button class="sp-copy" id="sp-copy-btn" onclick="copyShareUrl()">Copiar</button>
+  </div>
+  <div class="sp-hint">
+    1. Sube el archivo descargado a <strong>GitHub</strong> en la carpeta del cliente.<br>
+    2. El enlace de arriba se activa automáticamente.<br>
+    3. Pégalo en el portal del cliente.
+  </div>
+</div>
 </body>
 </html>
