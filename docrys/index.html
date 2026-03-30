@@ -878,8 +878,9 @@ function buildDefaultRRSS(){
   const s={};
   for(const m of MONTHS){
     s[m.key]=PLAN_RRSS[m.key].map(w=>({
-      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',revisionNum:0,correcciones:[]})),
+      ig:w.ig.map(c=>({topic:c.topic,text:'',hashtags:DEFAULT_HASHTAGS,link:'',materialLink:'',date:'',status:'pendiente',revisionBy:'',revisionAt:'',approvedBy:'',approvedAt:'',revisionNum:0,correcciones:[],historial:[]})),
       customIg:[],
+      deletedIg:[],
     }));
   }
   return s;
@@ -889,8 +890,9 @@ function loadRRSS(){
   for(const m of MONTHS){
     const r=lsGet('rrss_'+m.key);
     if(r)d[m.key]=r.map((w,wi)=>({
-      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||DEFAULT_HASHTAGS,link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[]})),
+      ig:(w.ig||[]).map((s,i)=>({topic:s.topic!==undefined?s.topic:(PLAN_RRSS[m.key][wi]?.ig[i]?.topic||''),text:s.text||'',hashtags:s.hashtags||DEFAULT_HASHTAGS,link:s.link||'',materialLink:s.materialLink||'',date:s.date||'',status:s.status||'pendiente',revisionBy:s.revisionBy||'',revisionAt:s.revisionAt||'',approvedBy:s.approvedBy||'',approvedAt:s.approvedAt||'',correcciones:s.correcciones||[],historial:s.historial||[]})),
       customIg:w.customIg||[],
+      deletedIg:w.deletedIg||[],
     }));
   }
   return d;
@@ -952,6 +954,25 @@ function AddButton({onAdd,variant}){
 }
 
 const AGENCIA_NOMBRES=['Juli','Estefanía','Jessy','Paola','Sheila','Carla','Elena','Matías','Laura'];
+
+// ── SIMPLE CONFIRM MODAL ──────────────────────────────────────────────
+function SimpleConfirmModal({mensaje,onConfirm,onCancel}){
+  return React.createElement('div',{className:'del-modal-overlay',onClick:function(e){if(e.target===e.currentTarget)onCancel();}},
+    React.createElement('div',{className:'del-modal'},
+      React.createElement('div',{className:'del-modal-hdr'},
+        React.createElement('span',{className:'del-modal-icon'},'🗑️'),
+        React.createElement('div',null,
+          React.createElement('div',{className:'del-modal-title'},mensaje||'¿Realmente deseas borrar esta tarea?'),
+          React.createElement('div',{className:'del-modal-sub'},'Esta acción no se puede deshacer')
+        )
+      ),
+      React.createElement('div',{className:'del-modal-actions',style:{paddingTop:20}},
+        React.createElement('button',{className:'del-modal-cancel',onClick:onCancel},'Cancelar'),
+        React.createElement('button',{className:'del-modal-confirm',onClick:onConfirm},'Sí, borrar')
+      )
+    )
+  );
+}
 
 // ── DELETE MODAL ──────────────────────────────────────────────────────
 function DeleteModal({titulo,onConfirm,onCancel}){
@@ -1320,13 +1341,46 @@ function PostCard({planCfg,data,onUpdate,onDelete,onApprove}){
   );
 }
 
-function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onUpdateCustom,onDeleteCustom,onApprove,defOpen}){
+function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onUpdateCustom,onDeleteCustom,onDeleteBase,onApprove,defOpen}){
   const[open,setOpen]=useState(defOpen);
-  const all=[...dataWeek.ig,...(dataWeek.customIg||[])];
-  const apr=all.filter(d=>d.status==='aprobado').length;
-  const rev=all.filter(d=>d.status==='revision').length;
-  const total=planWeek.ig.length+(dataWeek.customIg||[]).length;
+  const[confirmDel,setConfirmDel]=useState(null); // {type:'base'|'custom', idx}
+
+  const deletedIg=dataWeek.deletedIg||[];
+
+  // Build all posts: base (not deleted) + custom, each with source info
+  const basePosts=(dataWeek.ig||[])
+    .map(function(d,i){return {src:'base',idx:i,planCfg:planWeek.ig[i],data:d};})
+    .filter(function(p){return deletedIg.indexOf(p.idx)===-1;});
+  const customPosts=(dataWeek.customIg||[])
+    .map(function(d,i){return {src:'custom',idx:i,planCfg:null,data:d};});
+
+  // Combine and sort by date (posts without date go last)
+  const allPosts=[...basePosts,...customPosts].sort(function(a,b){
+    const da=a.data.date||'';
+    const db=b.data.date||'';
+    if(!da&&!db)return 0;
+    if(!da)return 1;
+    if(!db)return -1;
+    return da<db?-1:da>db?1:0;
+  });
+
+  const apr=allPosts.filter(function(p){return p.data.status==='aprobado';}).length;
+  const rev=allPosts.filter(function(p){return p.data.status==='revision';}).length;
+  const total=allPosts.length;
+
+  function handleDelete(){
+    if(!confirmDel)return;
+    if(confirmDel.type==='base'){onDeleteBase(confirmDel.idx);}
+    else{onDeleteCustom('ig',confirmDel.idx);}
+    setConfirmDel(null);
+  }
+
   return React.createElement('div',{className:'week'},
+    confirmDel&&React.createElement(SimpleConfirmModal,{
+      mensaje:'¿Realmente deseas borrar esta tarea?',
+      onConfirm:handleDelete,
+      onCancel:function(){setConfirmDel(null);}
+    }),
     React.createElement('button',{className:'week-hdr '+(open?'on':''),onClick:()=>setOpen(o=>!o)},
       React.createElement('div',{className:'wk-left'},
         React.createElement('span',{className:'wk-label'},weekLabel),
@@ -1345,8 +1399,24 @@ function WeekSection({mk,wi,weekLabel,planWeek,dataWeek,onUpdate,onAddCustom,onU
         React.createElement('span',{className:'plat-count'},total+' publicaciones')
       ),
       React.createElement('div',{className:'posts-grid'},
-        planWeek.ig.map((cfg,i)=>React.createElement(PostCard,{key:'ig'+i,planCfg:cfg,data:{...dataWeek.ig[i],topic:dataWeek.ig[i]?.topic!==undefined?dataWeek.ig[i].topic:cfg.topic},onUpdate:(f,v)=>onUpdate('ig',i,f,v),onApprove:()=>onApprove('ig',i)})),
-        (dataWeek.customIg||[]).map((item,i)=>React.createElement(PostCard,{key:'cig'+i,planCfg:null,data:item,onUpdate:(f,v)=>onUpdateCustom('ig',i,f,v),onDelete:()=>onDeleteCustom('ig',i),onApprove:()=>onApprove('custom',i)}))
+        allPosts.map(function(p){
+          const key=p.src+'-'+p.idx;
+          const onUpd=p.src==='base'
+            ?function(f,v){onUpdate('ig',p.idx,f,v);}
+            :function(f,v){onUpdateCustom('ig',p.idx,f,v);};
+          const onDel=function(){setConfirmDel({type:p.src,idx:p.idx});};
+          const onApp=p.src==='base'
+            ?function(){onApprove('ig',p.idx);}
+            :function(){onApprove('custom',p.idx);};
+          return React.createElement(PostCard,{
+            key:key,
+            planCfg:p.planCfg,
+            data:{...p.data,topic:p.data.topic!==undefined?p.data.topic:(p.planCfg?.topic||'')},
+            onUpdate:onUpd,
+            onDelete:onDel,
+            onApprove:onApp
+          });
+        })
       ),
       React.createElement(AddButton,{onAdd:type=>onAddCustom('ig',type)})
     )
@@ -3214,6 +3284,9 @@ function App(){
   const deleteCustomRRSS=useCallback((mk,wi,plat,ci)=>{
     setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));n[mk][wi].customIg.splice(ci,1);return n;});
   },[]);
+  const deleteBaseRRSS=useCallback((mk,wi,idx)=>{
+    setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));if(!n[mk][wi].deletedIg)n[mk][wi].deletedIg=[];if(n[mk][wi].deletedIg.indexOf(idx)===-1)n[mk][wi].deletedIg.push(idx);return n;});
+  },[]);
   const approveRRSS=useCallback((mk,wi,plat,pi,isCustom)=>{
     doApprove();
     setRRSS(prev=>{const n=JSON.parse(JSON.stringify(prev));
@@ -3388,6 +3461,7 @@ function App(){
         onAddCustom:(plat,type)=>addCustomRRSS(month,wi,plat,type),
         onUpdateCustom:(plat,ci,f,v)=>updateCustomRRSS(month,wi,plat,ci,f,v),
         onDeleteCustom:(plat,ci)=>deleteCustomRRSS(month,wi,plat,ci),
+        onDeleteBase:(idx)=>deleteBaseRRSS(month,wi,idx),
         onApprove:(plat,pi)=>approveRRSS(month,wi,plat==='custom'?'customIg':plat,pi,plat==='custom'),
         defOpen:wi===0,
       })),
