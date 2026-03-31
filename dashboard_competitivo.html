@@ -871,7 +871,7 @@ function exportHTML(){
 <title>Análisis Competitivo · ${empNombre}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"><\/script>
+<${''}script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"><\/script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--brand:${c1};--brand2:${c2};--brand3:${c3};--bg:#f7f6f3;--surface:#ffffff;--border:#e8e4f0;--text:#1a1228;--muted:#7a6f85;--light:#f0ecf8;}
@@ -955,7 +955,7 @@ tr:hover td{background:var(--light);}
 <div id="sec-4" class="section"><div class="section-title">Sección 5<\/div><div class="section-h">Mapa de posicionamiento<\/div><div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;"><div style="font-size:.72rem;color:var(--muted);">Eje X:<\/div><select id="sel-x" onchange="rebuildBubble()" style="padding:.4rem .7rem;border:1px solid var(--border);background:var(--surface);font-family:'Poppins',sans-serif;font-size:.72rem;outline:none;"><option value="precio">Precio (bajo→alto)<\/option><option value="digital">Presencia digital<\/option><option value="serv">Amplitud servicios<\/option><\/select><div style="font-size:.72rem;color:var(--muted);">Eje Y:<\/div><select id="sel-y" onchange="rebuildBubble()" style="padding:.4rem .7rem;border:1px solid var(--border);background:var(--surface);font-family:'Poppins',sans-serif;font-size:.72rem;outline:none;"><option value="espec">Especialización<\/option><option value="rep">Reputación online<\/option><option value="precio">Precio<\/option><\/select><\/div><div class="legend" id="bubble-legend"><\/div><div class="chart-box"><div class="chart-wrap" style="height:400px;"><canvas id="bubbleChart"><\/canvas><\/div><\/div><\/div>
 <div id="sec-5" class="section"><div class="section-title">Sección 6<\/div><div class="section-h">Cuota de visibilidad digital<\/div><div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;"><div class="chart-box"><div class="chart-wrap" style="height:320px;"><canvas id="donutChart"><\/canvas><\/div><\/div><div id="visibility-details"><\/div><\/div><\/div>
 <div id="sec-6" class="section"><div class="section-title">Sección 7<\/div><div class="section-h">Recomendaciones estratégicas<\/div><div class="rec-grid" id="rec-grid"><\/div><\/div>
-<script>
+<${''}script>
 var DATA=${dataJson};
 var rC=null,bC=null,dC=null,tD=[],sD={};
 function st(i,b){document.querySelectorAll('.section').forEach((s,j)=>s.classList.toggle('active',j===i));document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(i===1&&rC)rC.update();if(i===4&&bC)bC.update();if(i===5&&dC)dC.update();}
