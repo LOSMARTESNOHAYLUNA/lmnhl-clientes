@@ -1043,7 +1043,9 @@ function AddButton({onAdd,variant}){
 function DeleteModal({titulo,onConfirm,onCancel}){
   const[texto,setTexto]=useState('');
   const[nombre,setNombre]=useState('');
-  const ok=texto==='Borrar'&&nombre;
+  const textoLimpio=texto.trim().replace(/["'«»]/g,'').toLowerCase();
+  const textoOk=textoLimpio==='borrar';
+  const ok=textoOk&&nombre;
   return React.createElement('div',{className:'delete-modal-overlay',onClick:function(e){if(e.target===e.currentTarget)onCancel();}},
     React.createElement('div',{className:'delete-modal'},
       React.createElement('div',null,
@@ -1059,11 +1061,11 @@ function DeleteModal({titulo,onConfirm,onCancel}){
         )
       ),
       React.createElement('div',null,
-        React.createElement('div',{className:'confirm-section-label',style:{marginBottom:6}},'Escribe "Borrar" para confirmar'),
+        React.createElement('div',{className:'confirm-section-label',style:{marginBottom:6}},'Escribe BORRAR para confirmar'),
         React.createElement('input',{
-          className:'delete-confirm-input'+(texto==='Borrar'?' ok':''),
+          className:'delete-confirm-input'+(textoOk?' ok':''),
           type:'text',autoFocus:true,
-          placeholder:'Borrar',
+          placeholder:'BORRAR',
           value:texto,
           onChange:e=>setTexto(e.target.value)
         })
